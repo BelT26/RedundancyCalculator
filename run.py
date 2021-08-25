@@ -27,7 +27,7 @@ def get_role():
     while True:
         role = input('Would you like to login as staff or HR? ')
         if role.lower() == 'hr':
-            return 'admin'       
+            return 'admin'
         elif role.lower() == 'staff':
             return 'basic'
         print('You must select either staff or HR')
@@ -36,6 +36,7 @@ def get_role():
 access_level = get_role()
 
 print(f"You have selected {access_level} access")
+
 
 def check_password():
     attempts = 3
@@ -53,3 +54,19 @@ def check_password():
 if access_level == 'admin':
     check_password()
 
+
+def get_gross_salary():
+    while True:
+        gross_salary = input('Please input your gross annual salary. Eg 29000. ')
+        try:
+            int(gross_salary)
+        except ValueError:
+            print('You must only input numbers')
+        else:
+            gross_salary = int(gross_salary)
+            return gross_salary
+
+
+if access_level == 'basic':
+    gross_salary = get_gross_salary()
+    print(gross_salary)
