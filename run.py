@@ -80,11 +80,52 @@ def get_length_of_service():
             return int(length_of_service)
 
 
-def calculate_voluntary_extra(years, weekly_pay):
-    if years >= 5:
-        return weekly_pay * 6
+def get_age():
+    while True:
+        user_age = input('Please enter your age on 7/10/21 ')
+        try:
+            int(user_age)
+        except ValueError:
+            print('Please enter whole numbers only')
+        else:
+            print(f'You are {user_age} years old')
+            return int(user_age)
+
+
+def calculate_voluntary_extra(years_service, weekly_pay):
+    if years_service >= 5:
+        return round(weekly_pay * 6, 2)
     else:
-        return weekly_pay * 4
+        return round(weekly_pay * 4, 2)
+
+
+def calculate_statutory(age, years_service, weekly_pay):
+    if weekly_pay >= 544:
+        weekly_statutory = 544
+    else:
+        weekly_statutory = weekly_pay
+    if years_service >= 20:
+        statutory_years = 20
+    else:
+        statutory_years = years_service
+    starting_age = age - statutory_years
+    lower_rate_years = 0
+    if starting_age < 22:
+        lower_rate_years = 22 - starting_age
+    print(f'lower rate years: {lower_rate_years}')
+    standard_rate_years = 0
+    if starting_age < 41:
+        if starting_age > 22:
+            standard_rate_years = min(41 - starting_age, years_service)
+        else:
+            standard_rate_years = min(41 - 22, years_service)
+    print(f'standard years: {standard_rate_years}')
+    higher_rate_years = 0
+    if age > 40:
+        higher_rate_years = min(age-40, years_service)
+    print(f'higher rate years: {higher_rate_years}')
+    statutory_pay = weekly_statutory * ((lower_rate_years * 0.5) + standard_rate_years + (higher_rate_years * 1.5))
+    print(f'Your statutory redundancy pay is {statutory_pay}')
 
 
 def calculate_redundancy():
@@ -99,10 +140,10 @@ def calculate_redundancy():
     print(f'Your weekly salary is {rounded_weekly}')
     vol_ex = calculate_voluntary_extra(los, rounded_weekly)
     print(f'Extra for voluntary {vol_ex}')
+    staff_age = get_age()
+    calculate_statutory(staff_age, los, rounded_weekly)
 
 
 if access_level == 'basic':
     calculate_redundancy()
-
-
 
