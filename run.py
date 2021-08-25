@@ -1,3 +1,4 @@
+import math
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -61,12 +62,47 @@ def get_gross_salary():
         try:
             int(gross_salary)
         except ValueError:
-            print('You must only input numbers')
+            print('Please only enter numbers')
         else:
             gross_salary = int(gross_salary)
             return gross_salary
 
 
-if access_level == 'basic':
+def get_length_of_service():
+    while True:
+        length_of_service = input('Please enter the number of complete years you have worked at Miki Travel. ')
+        try:
+            int(length_of_service)
+        except ValueError:
+            print('Please enter whole numbers only')
+        else:
+            print(f'You have completed {length_of_service} years')
+            return int(length_of_service)
+
+
+def calculate_voluntary_extra(years, weekly_pay):
+    if years >= 5:
+        return weekly_pay * 6
+    else:
+        return weekly_pay * 4
+
+
+def calculate_redundancy():
+    los = get_length_of_service()
+    if los < 2:
+        print('You must have completed at least 2 years to be entitled to redundancy')
+        return
     gross_salary = get_gross_salary()
     print(gross_salary)
+    weekly_salary = gross_salary/52
+    rounded_weekly = round(weekly_salary, 2)
+    print(f'Your weekly salary is {rounded_weekly}')
+    vol_ex = calculate_voluntary_extra(los, rounded_weekly)
+    print(f'Extra for voluntary {vol_ex}')
+
+
+if access_level == 'basic':
+    calculate_redundancy()
+
+
+
