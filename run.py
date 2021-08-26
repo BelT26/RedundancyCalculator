@@ -154,9 +154,20 @@ def calculate_statutory(age, years_service, weekly_pay):
     print(f'Your statutory redundancy pay is {statutory_pay}')
 
 
+def calculate_pay_in_lieu(salary, years_service):
+    """
+    returns the amount of pay the user would receive in lieu of notice
+    if the years worked are 5 or more, returns 1 week's pay per year
+    if the years worked are less than 5 defaults to 1 month's pay
+    """
+    if years_service > 4:
+        return (salary / 52) * years_service
+    return salary / 12
+
+
 def calculate_holidays(length_of_service):
     """
-    calculates the number of unused holiday days that the user should be paid for
+    calculates the number of unused holidays that the user should be paid for
     """
     holiday_entitlement = max((22 + length_of_service), 26)
     current_year_entitlement = holiday_entitlement * (10 / 52)
