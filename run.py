@@ -151,7 +151,7 @@ def calculate_statutory(age, years_service, weekly_pay):
         higher_rate_years = min(age-40, years_service)
     print(f'higher rate years: {higher_rate_years}')
     statutory_pay = weekly_statutory * ((lower_rate_years * 0.5) + standard_rate_years + (higher_rate_years * 1.5))
-    print(f'Your statutory redundancy pay is {statutory_pay}')
+    return statutory_pay
 
 
 def calculate_pay_in_lieu(salary, years_service):
@@ -177,6 +177,9 @@ def calculate_holidays(length_of_service):
     rem_holidays = cf_holidays + min((bought_holidays - cy_holidays), 0) + current_year_entitlement
     return rem_holidays
 
+def calculate_holiday_pay(length_of_service, salary):
+    return calculate_holidays(length_of_service) * salary / (52 * 5)
+
 def get_overtime_hours():
     """
     checks that the user inserts a valid number
@@ -198,7 +201,7 @@ def get_overtime_minutes():
     checks that the user inserts a valid number between 0 & 60
     converts the minutes into a fraction of an hour
     """
-    while True: 
+    while True:
         excess_minutes = input('Please enter the number of excess minutes showing on your T&A record')
         try:
             int(excess_minutes)
@@ -211,9 +214,31 @@ def get_overtime_minutes():
 
 
 def calculate_overtime_payment(salary):
-    total_time = get_overtime_hours + get_overtime_minutes
+    """
+    calculates the overtime payment due based on the validated number of hours &
+    minutes returned by get_overtime_hours and get_overtime_minutes functions.
+    the standard working week is 37.5 hours
+    """
+    total_time = get_overtime_hours() + get_overtime_minutes()
     overtime_payment = salary / (52*37.5) * total_time
     return overtime_payment
+
+
+def calculate_tax(salary, overtime, pay_in_lieu, holidays):
+    standard_rate_tax = 0
+    higher_rate_tax = 0
+    highest_rate_tax = 0
+    taxable_total = (salary/12) + overtime + pay_in_lieu + holidays - (12570/12)
+    if taxable_total < (37700/12):
+        standard_rate_tax = taxable_total * 0.2
+        return standard_rate_tax
+    standard_rate_tax = (37700/12) * 0.2
+    if taxable_total < (137430/12):
+        higher_rate_tax = (taxable_total - 37700/12) * 0.4
+        return standard_rate_tax + higher_rate_tax
+    higher_rate_tax = (99730/12) * 0.4
+    highest_rate_tax = (taxable_total - 137430/12) * 0.45
+    return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
 
 def calculate_redundancy():
@@ -227,13 +252,21 @@ def calculate_redundancy():
     rounded_weekly = round(weekly_salary, 2)
     print(f'Your weekly salary is {rounded_weekly}')
     vol_ex = calculate_voluntary_extra(los, rounded_weekly)
-    print(f'Extra for voluntary {vol_ex}')
+    print(f'Your ex gratia payment for voluntary redundance is {vol_ex}')
     staff_age = get_age()
-    calculate_statutory(staff_age, los, rounded_weekly)
+    statutory = calculate_statutory(staff_age, los, rounded_weekly)
+    print(f'Your statutory redundancy is {statutory} \n')
+    lieu = calculate_pay_in_lieu(gross_salary, los)
+    print(f'Your pay in lieu of notice is {lieu} \n')
     num_hols = calculate_holidays(los)
     print(f'You have {num_hols} unused holiday days')
+    holiday_pay = calculate_holiday_pay(los, gross_salary)
+    print(f'Your payment for holidays is {holiday_pay}')
+    overtime = calculate_overtime_payment(gross_salary)
+    print(f'Your payment for overtime is {overtime}')
+    tax = calculate_tax(gross_salary, overtime, lieu, holiday_pay)
+    print(f'Total tax deductions are {tax}')
 
 
 if access_level == 'basic':
     calculate_redundancy()
-
