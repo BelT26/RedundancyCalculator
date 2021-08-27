@@ -1,4 +1,3 @@
-import math
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -27,7 +26,7 @@ print('Welcome to the Miki Travel Voluntary redundancy calculator.')
 def get_role():
     """
     assigns an access level to a user based on whether they select
-    to log in as a staff member or  a representative from the Human 
+    to log in as a staff member or  a representative from the Human
     Resources department
     rejects any values that are not 'staff' or 'hr'
     """
@@ -51,7 +50,7 @@ def check_password():
     """
     attempts = 3
     while attempts > 0:
-        password = input('Please enter your password to access the redundancy database: ')
+        password = input('Please enter your password: ')
         if password == '#MTL':
             print('correct password')
             break
@@ -67,10 +66,12 @@ if access_level == 'admin':
 
 def get_gross_salary():
     """
-    asks the user for their salary and checks that a numerical answer is provided
+    asks the user for their salary and checks that a numerical answer is
+    provided
     """
     while True:
-        gross_salary = input('Please input your gross annual salary. Eg 29000. ')
+        print('Please input your gross annual salary.')
+        gross_salary = input('Enter numbers only. EG 29000: ')
         try:
             int(gross_salary)
         except ValueError:
@@ -82,14 +83,16 @@ def get_gross_salary():
 
 def get_length_of_service():
     """
-    asks the user for their length of service and checks that a numerical answer is provided
+    asks the user for their length of service
+    checks that a numerical answer is provided
     """
     while True:
-        length_of_service = input('Please enter the number of complete years you have worked at Miki Travel. ')
+        print('Please enter the number of years you have worked at MTL.')
+        length_of_service = input('Number of years: ')
         try:
             int(length_of_service)
         except ValueError:
-            print('Please enter whole numbers only')
+            print('Please enter whole numbers only.')
         else:
             return int(length_of_service)
 
@@ -99,7 +102,8 @@ def get_age():
     asks the user for their age and checks that a numerical answer is provided
     """
     while True:
-        user_age = input('Please enter your age on 7/10/21 ')
+        print('Please enter your age on 7/10/21')
+        user_age = input('Age: ')
         try:
             int(user_age)
         except ValueError:
@@ -110,8 +114,8 @@ def get_age():
 
 def calculate_voluntary_extra(years_service, weekly_pay):
     """
-    calculates the extra tax free payment that will be made if the user opts for
-    voluntary redundancy
+    calculates the extra tax free payment that will be made if the user opts
+    for voluntary redundancy
     """
     if years_service >= 5:
         return round(weekly_pay * 6, 2)
@@ -123,35 +127,38 @@ def calculate_statutory(age, years_service, weekly_pay):
     """
     calculates the statutory redundancy pay
     caps the max weekly pay at 544 and the max years considered at 20
-    calculates the number of weeks entitlement based on the user's age during each
-    year of service
+    calculates the number of weeks entitlement based on the user's age during
+    each year of service
     """
     if weekly_pay >= 544:
-        weekly_statutory = 544
+        weekly_stat = 544
     else:
-        weekly_statutory = weekly_pay
+        weekly_stat = weekly_pay
     if years_service >= 20:
         statutory_years = 20
     else:
         statutory_years = years_service
     starting_age = age - statutory_years
-    lower_rate_years = 0
+    low_rate_yrs = 0
     if starting_age < 22:
-        lower_rate_years = 22 - starting_age
-    print(f'lower rate years: {lower_rate_years}')
-    standard_rate_years = 0
+        low_rate_yrs = 22 - starting_age
+    high_rate_yrs = 0
+    if age > 41:
+        high_rate_yrs = min(age-41, statutory_years)
+    std_rate_yrs = 0
     if starting_age < 41:
         if starting_age > 22:
-            standard_rate_years = min(41 - starting_age, years_service)
+            std_rate_yrs = min(41 - starting_age, statutory_years)
+        elif age > 41:
+            std_rate_yrs = statutory_years - high_rate_yrs
         else:
-            standard_rate_years = min(41 - 22, years_service)
-    print(f'standard years: {standard_rate_years}')
-    higher_rate_years = 0
-    if age > 40:
-        higher_rate_years = min(age-40, years_service)
-    print(f'higher rate years: {higher_rate_years}')
-    statutory_pay = weekly_statutory * ((lower_rate_years * 0.5) + standard_rate_years + (higher_rate_years * 1.5))
-    return statutory_pay
+            std_rate_yrs = min(41 - 22, statutory_years - low_rate_yrs)
+    print(f'lower rate years: {low_rate_yrs}')
+    print(f'standard years: {std_rate_yrs}')
+    print(f'higher rate years: {high_rate_yrs}')
+    years = (low_rate_yrs * 0.5) + std_rate_yrs + (high_rate_yrs * 1.5)
+    stat_pay = weekly_stat * years
+    return stat_pay
 
 
 def calculate_pay_in_lieu(salary, years_service):
@@ -162,7 +169,7 @@ def calculate_pay_in_lieu(salary, years_service):
     """
     if years_service > 4:
         return (salary / 52) * years_service
-    return salary / 12
+    return round((salary / 12), 2)
 
 
 def calculate_holidays(length_of_service):
@@ -171,30 +178,40 @@ def calculate_holidays(length_of_service):
     """
     holiday_entitlement = max((22 + length_of_service), 26)
     current_year_entitlement = holiday_entitlement * (10 / 52)
-    cf_holidays = int(input('Please enter the number of holidays carried over from July 2021'))
-    bought_holidays = int(input('Please enter the number of holidays appearing in the "bought" column'))
-    cy_holidays = int(input('Please enter the number of holidays taken since August 1st 2021'))
-    rem_holidays = cf_holidays + min((bought_holidays - cy_holidays), 0) + current_year_entitlement
-    return rem_holidays
+    print('Please enter the number of holidays carried over from July 2021')
+    cf_holidays = int(input('Refer to the CF column of your dashboard: '))
+    print('Please enter the number of extra holidays allocated in 2020')
+    bought_hols = int(input('Refer to the bought column of your dashboard: '))
+    print('Please enter the number of holidays taken since 1/8/21')
+    hols_taken = int(input('Refer to the taken column of your dashboard: '))
+    print('Please enter the number of holidays booked to be taken by 30/9/21')
+    hols_booked = int(input('Refer to the booked column of your dashboard: '))
+    rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
+    return round(rem_holidays, 2)
 
-def calculate_holiday_pay(length_of_service, salary):
-    return calculate_holidays(length_of_service) * salary / (52 * 5)
+
+def calculate_holiday_pay(num_holidays, salary):
+    return round(num_holidays * salary / (52 * 5), 2)
+
 
 def get_overtime_hours():
     """
     checks that the user inserts a valid number
     caps the overtime at 75 hours
     """
-    while True: 
-        excess_hours = input('Please enter the number of hours only showing on your T&A record')
+    while True:
+        print('Please enter the excess hours showing on your dashboard')
+        excess_hours = input('Please enter only complete hours: ')
         try:
             int(excess_hours)
         except ValueError:
             print('Please enter whole numbers only')
         else:
-            if int(excess_hours > 75):
+            if int(excess_hours) > 75:
                 print('The maximum number of overtime payable is 75 hours')
-            return int(excess_hours)
+            else:
+                return int(excess_hours)
+
 
 def get_overtime_minutes():
     """
@@ -202,21 +219,27 @@ def get_overtime_minutes():
     converts the minutes into a fraction of an hour
     """
     while True:
-        excess_minutes = input('Please enter the number of excess minutes showing on your T&A record')
+        print('Please enter the excess minutes showing on your dashboard')
+        print('Please enter a negative figure if time owed is less than 0')
+        excess_minutes = input('Excess minutes: ')
         try:
             int(excess_minutes)
         except ValueError:
             print('Please enter a number')
         else:
-            if int(excess_minutes > 59):
+            if int(excess_minutes) > 59:
                 print('The number of minutes cannot exceed 59')
-            return int(excess_minutes) * (100 / 60)
+            elif int(excess_minutes) == 0:
+                return 0
+            else:
+                return int(excess_minutes) / 60
 
 
 def calculate_overtime_payment(salary):
     """
-    calculates the overtime payment due based on the validated number of hours &
-    minutes returned by get_overtime_hours and get_overtime_minutes functions.
+    calculates the overtime payment due based on the validated number
+    of hours and minutes returned by get_overtime_hours and
+    get_overtime_minutes functions.
     the standard working week is 37.5 hours
     """
     total_time = get_overtime_hours() + get_overtime_minutes()
@@ -228,44 +251,45 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
     standard_rate_tax = 0
     higher_rate_tax = 0
     highest_rate_tax = 0
-    taxable_total = (salary/12) + overtime + pay_in_lieu + holidays - (12570/12)
-    if taxable_total < (37700/12):
-        standard_rate_tax = taxable_total * 0.2
+    taxable_sum = (salary/12) + overtime + pay_in_lieu + holidays - (12570/12)
+    if taxable_sum < (37700/12):
+        standard_rate_tax = taxable_sum * 0.2
         return standard_rate_tax
     standard_rate_tax = (37700/12) * 0.2
-    if taxable_total < (137430/12):
-        higher_rate_tax = (taxable_total - 37700/12) * 0.4
+    if taxable_sum < (137430/12):
+        higher_rate_tax = (taxable_sum - 37700/12) * 0.4
         return standard_rate_tax + higher_rate_tax
     higher_rate_tax = (99730/12) * 0.4
-    highest_rate_tax = (taxable_total - 137430/12) * 0.45
+    highest_rate_tax = (taxable_sum - 137430/12) * 0.45
     return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
 
 def calculate_redundancy():
     los = get_length_of_service()
     if los < 2:
-        print('You must have completed at least 2 years to be entitled to redundancy')
+        print('You must have completed at least 2 years for redundancy')
         return
     gross_salary = get_gross_salary()
-    print(gross_salary)
     weekly_salary = gross_salary/52
     rounded_weekly = round(weekly_salary, 2)
-    print(f'Your weekly salary is {rounded_weekly}')
     vol_ex = calculate_voluntary_extra(los, rounded_weekly)
-    print(f'Your ex gratia payment for voluntary redundance is {vol_ex}')
     staff_age = get_age()
     statutory = calculate_statutory(staff_age, los, rounded_weekly)
-    print(f'Your statutory redundancy is {statutory} \n')
     lieu = calculate_pay_in_lieu(gross_salary, los)
-    print(f'Your pay in lieu of notice is {lieu} \n')
     num_hols = calculate_holidays(los)
-    print(f'You have {num_hols} unused holiday days')
-    holiday_pay = calculate_holiday_pay(los, gross_salary)
-    print(f'Your payment for holidays is {holiday_pay}')
-    overtime = calculate_overtime_payment(gross_salary)
-    print(f'Your payment for overtime is {overtime}')
-    tax = calculate_tax(gross_salary, overtime, lieu, holiday_pay)
-    print(f'Total tax deductions are {tax}')
+    holiday_pay = calculate_holiday_pay(num_hols, gross_salary)
+    overtime = round(calculate_overtime_payment(gross_salary), 2)
+    tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
+    std_red = statutory + lieu + holiday_pay + overtime - tax
+    vol_red = statutory + vol_ex
+    print(f'Your ex gratia payment for voluntary redundance is {vol_ex}\n')
+    print(f'Your statutory redundancy is {statutory} \n')
+    print(f'Your pay in lieu of notice is {lieu} \n')
+    print(f'Your payment for unused holidays is {holiday_pay}')
+    print(f'Your payment for overtime is {overtime}\n')
+    print(f'Total tax deductions are {tax}\n')
+    print(f'You would receive {vol_red} for voluntary redundancy.')
+    print(f'Your non-voluntary redundancy payment would be {std_red}.')
 
 
 if access_level == 'basic':
