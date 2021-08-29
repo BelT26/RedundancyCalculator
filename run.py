@@ -1,5 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from colorama import init
+from termcolor import colored
 
 
 SCOPE = [
@@ -84,9 +86,10 @@ def view_pending():
 
 def authorise(data):
     global approved
+    global pending_sheet
     print('Authorising application.')
     approved.append_row(data)
-    pending.batch_clear(first_appl)
+     pending_sheet.delete_rows(2)
 
 
 def reject_appl(data):
