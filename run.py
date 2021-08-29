@@ -57,10 +57,13 @@ def check_password():
     print('Password attempts exhausted')
     return False
 
+pending_sheet = SHEET.worksheet('applications')
 pending = SHEET.worksheet('applications').get_all_values()
 headings = pending[0]
 first_appl = pending[1]
 approved = SHEET.worksheet('approved')
+rejected = SHEET.worksheet('rejected')
+
 
 def view_pending():
     global pending
@@ -74,9 +77,9 @@ def view_pending():
         authorise(first_appl)
     else:
         print('Do you wish to reject this application?')
-        reject = input('Please enter Y or N')
+        reject = input('Please enter Y or N: ')
         if reject.lower() == 'y':
-            reject(first_appl)
+            reject_appl(first_appl)
 
 
 def authorise(data):
@@ -86,13 +89,12 @@ def authorise(data):
     pending.batch_clear(first_appl)
 
 
-def reject(data):
+def reject_appl(data):
     print('Rejecting application.')
-    rejection_worksheet = SHEET.worksheet('rejected')
-    rejection_worksheet.append_row(data)
-
-
-
+    global rejected
+    global pending_sheet
+    rejected.append_row(data)
+    pending_sheet.delete_rows(2)
 
 
 if access_level == 'admin':
@@ -102,7 +104,7 @@ if access_level == 'admin':
         print(f'{num_pending} application(s) pending approval')
         print('Do you wish to view the pending application(s)?')
         while True:
-            view = input('Please enter Y or N')
+            view = input('Please enter Y or N: ')
             if view.lower() == 'y':
                 print('First pending application:')
                 view_pending()
