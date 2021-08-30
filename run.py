@@ -124,7 +124,7 @@ def get_gross_salary():
     """
     while True:
         print('Please input your gross annual salary.')
-        gross_salary = input('Enter numbers only. EG 29000:\n')
+        gross_salary = input('Enter numbers only. For example 29000:\n')
         try:
             int(gross_salary)
         except ValueError:
@@ -326,8 +326,72 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
             highest_rate_tax = (taxable_sum - 137430/12) * 0.45
             return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
-
+name = ''
 staff_data = []
+
+
+def update_applications_worksheet(data):
+    print('Updating worksheet')
+    applications_worksheet = SHEET.worksheet('applications')
+    applications_worksheet.append_row(data)
+
+
+def add_to_pending():
+    global name
+    pending_names = SHEET.worksheet('applications').col_values(1)
+    approved_names = SHEET.worksheet('approved').col_values(1)
+    rejected_names = SHEET.worksheet('rejected').col_values(1)
+    if name in pending_names:
+        ('Print application already submitted and under review.')
+        exit()
+    elif name in approved_names:
+        ('Print application already approved')
+        exit()
+    elif name in rejected_names:
+        ('Print application already rejected')
+        exit
+    else:
+        department = input('Please enter your department:\n')
+        staff_data.insert(0, name)
+        staff_data.insert(1, department)
+        update_applications_worksheet(staff_data)
+        print('Application submitted')
+
+
+def validate_payroll_num():
+    global name
+    name = input('Please enter your full name:\n')
+    staff = SHEET.worksheet('staff').col_values(1)
+    pay_nums = SHEET.worksheet('staff').col_values(2)
+    if name in staff:
+        print('valid name')
+        name_ind = staff.index(name)
+        payroll = input('Please enter your payroll number:\n')
+        if payroll == pay_nums[name_ind]:
+            print('Access granted')
+            add_to_pending()
+        else:
+            print('Incorrect payroll number. Access refused')
+            exit()
+    else:
+        print('Invalid name. Access refused')
+        exit()
+
+
+
+def check_if_applying():
+    print('Do you wish to proceed with your application?')
+    while True:
+        apply = input('Please enter Y or N:\n')
+        if apply.lower() == 'y':
+            print('Processing application')
+            validate_payroll_num()
+        elif apply.lower() == 'n':
+            print('Application not processed')
+            exit()
+        else:
+            print('You must enter Y or N')
+
 
 
 def calculate_redundancy():
@@ -345,7 +409,7 @@ def calculate_redundancy():
     holiday_pay = calculate_holiday_pay(num_hols, gross_salary)
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
-    total_gross = (statutory + lieu + holiday_pay + overtime, 2)
+    total_gross = round(statutory + lieu + holiday_pay + overtime, 2)
     std_red = round(total_gross - tax, 2)
     vol_red = round(std_red + vol_ex, 2)
     print(f'\nEx gratia payment for voluntary redundancy: {vol_ex}')
@@ -359,47 +423,15 @@ def calculate_redundancy():
     print(f'Your non-voluntary redundancy payment would be {std_red}.\n')
     global staff_data
     staff_data.extend((gross_salary, statutory, vol_ex, lieu, holiday_pay, overtime, tax, vol_red))
+    check_if_applying()
 
 
-def check_if_applying():
-    print('Do you wish to proceed with your application?')
-    while True:
-        apply = input('Please enter Y or N:\n')
-        if apply.lower() == 'y':
-            print('Processing application')
-            return True
-        elif apply.lower() == 'n':
-            print('Application not processed')
-            return False
-        else:
-            print('You must enter Y or N')
-
-
-def update_applications_worksheet(data):
-    print('Updating worksheet')
-    applications_worksheet = SHEET.worksheet('applications')
-    applications_worksheet.append_row(data)
-
-
-def validate_payroll_num():
-    name = input('Please enter your full name:\n')
-    staff = SHEET.worksheet('staff').col_values(1)
-    pay_nums = SHEET.worksheet('staff').col_values(2)
-    if name in staff:
-        print('valid name')
-        name_ind = staff.index(name)
-        print(name_ind)
-        payroll = input('Please enter your payroll number:\n')
-        if payroll == pay_nums[name_ind]:
-            print('Access granted')
-        else:
-            print('Incorrect payroll number. Access refused')
-    else:
-        print('Invalid name. Access refused')
-
-
-def know_redundancy():
-    print('Have you calculated your reduncancy?')
+def display_calc_message():
+    text1 = colored('\nPlease ensure you have your payroll number and access to', 'yellow', attrs=['bold'])
+    text2 = colored('your time and attendance dashboard.\n', 'yellow', attrs=['bold'])
+    print(text1)
+    print(text2)
+    calculate_redundancy()
 
 
 def select_staff_option():
@@ -411,14 +443,11 @@ def select_staff_option():
         print('Enter Q to quit')
         staff_choice = input('Enter the option number here:\n')
         if staff_choice == '1':
-            text1 = colored('\nPlease ensure you have your payroll number and access to', 'yellow', attrs=['bold'])
-            text2 = colored('your time and attendance dashboard.\n', 'yellow', attrs=['bold'])
-            print(text1)
-            print(text2)
-            calculate_redundancy()
+            display_calc_message()
             break
         elif staff_choice == '2':
-            validate_payroll_num()
+            print('You must verify your redundancy payment before proceding')
+            display_calc_message()
             break
         elif staff_choice == '3':
             print('Checking status')
