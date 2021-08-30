@@ -29,3 +29,35 @@ The deployment terminal is set to 80 columns by 24 rows. That means that each li
 
 -----
 Happy coding!
+
+
+# Redundancy Calculator
+
+## Table of Contents
+* Motivation
+* Access levels
+* Staff access features 
+* Caluclate Redundancy
+* Check status
+* HR access features
+* View applications
+* Approve applications
+* Reject applications
+* Reverse decisions
+* Bugs and challenges
+* Deployment
+* Credits
+* Future deployment possibilities
+
+
+## Motivation
+I work for a travel company that is currently undergoing their third round of redundancies due to the pandemic.
+The possibility of voluntary redundancy will be offered to staff.
+During the previous redundancy waves staff reported the following concerns about making an enquiry to HR to find out how much voluntary redundancy they would be entitled to:
+* The information sent out was not detailed enough and tax was not deducted so it was unclear how much money they would receive.
+* There were delays of several days before they received the information
+* They would have preferred to obtain this information anonymously as they were concerned it could affect the reduncancy selection process if it were recorded that they had enquired about a voluntary payout. 
+
+To combat these issues I created a redundancy calculator that would allow staff to immediately access their potential voluntary redundancy payout in an anonymous way.
+
+## Access levels

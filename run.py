@@ -364,19 +364,19 @@ def validate_payroll_num():
     staff = SHEET.worksheet('staff').col_values(1)
     pay_nums = SHEET.worksheet('staff').col_values(2)
     if name in staff:
-        print('valid name')
         name_ind = staff.index(name)
         payroll = input('Please enter your payroll number:\n')
         if payroll == pay_nums[name_ind]:
-            print('Access granted')
+            access = colored('Access granted', 'green')
+            print(access)
             add_to_pending()
         else:
-            print('Incorrect payroll number. Access refused')
+            inc_pay = colored('Incorrect payroll number. Access refused', 'red')
+            print(inc_pay)
             exit()
     else:
         print('Invalid name. Access refused')
         exit()
-
 
 
 def check_if_applying():
@@ -386,12 +386,12 @@ def check_if_applying():
         if apply.lower() == 'y':
             print('Processing application')
             validate_payroll_num()
+            break
         elif apply.lower() == 'n':
             print('Application not processed')
             exit()
         else:
             print('You must enter Y or N')
-
 
 
 def calculate_redundancy():
@@ -409,9 +409,9 @@ def calculate_redundancy():
     holiday_pay = calculate_holiday_pay(num_hols, gross_salary)
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
-    total_gross = round(statutory + lieu + holiday_pay + overtime, 2)
-    std_red = round(total_gross - tax, 2)
+    std_red = round(statutory + lieu + holiday_pay + overtime - tax, 2)
     vol_red = round(std_red + vol_ex, 2)
+    total_gross = round(vol_ex + statutory + lieu + holiday_pay + overtime, 2)
     print(f'\nEx gratia payment for voluntary redundancy: {vol_ex}')
     print(f'Statutory redundancy: {statutory}')
     print(f'Pay in lieu of notice: {lieu}')
@@ -462,12 +462,3 @@ def select_staff_option():
 if access_level == 'basic':
     print('\nLogged in as staff')
     select_staff_option()
-    """
-    application = check_if_applying()
-    if application:
-        name = input('Please enter your full name:\n')
-        department = input('Please enter your department:\n')
-        staff_data.insert(0, name)
-        staff_data.insert(1, department)
-        update_applications_worksheet(staff_data)
-    """
