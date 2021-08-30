@@ -18,8 +18,8 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
-
-print('Welcome to the Miki Travel Voluntary redundancy calculator.')
+welcome = colored('Welcome to the Miki Travel Voluntary redundancy calculator.', 'cyan', attrs=['bold'])
+print(welcome)
 
 
 def get_role():
@@ -30,7 +30,7 @@ def get_role():
     rejects any values that are not 'staff' or 'hr'
     """
     while True:
-        role = input('Would you like to login as staff or HR? ')
+        role = input('Would you like to login as staff or HR?\n')
         if role.lower() == 'hr':
             return 'admin'
         elif role.lower() == 'staff':
@@ -49,7 +49,7 @@ def check_password():
     """
     attempts = 3
     while attempts > 0:
-        password = input('Please enter your password: ')
+        password = input('Please enter your password:\n')
         if password == '#MTL':
             print('correct password')
             return True
@@ -59,27 +59,25 @@ def check_password():
     print('Password attempts exhausted')
     return False
 
+
 pending_sheet = SHEET.worksheet('applications')
-pending = SHEET.worksheet('applications').get_all_values()
-headings = pending[0]
-first_appl = pending[1]
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
 
 def view_pending():
-    global pending
-    global headings
-    global first_appl
+    pending = SHEET.worksheet('applications').get_all_values()
+    headings = pending[0]
+    first_appl = pending[1]
     for head, app in zip(headings, first_appl):
         print(f"{head}: {app}")
     print('Do you wish to approve this application?')
-    approve = input('Please enter Y or N: ')
+    approve = input('Please enter Y or N:\n')
     if approve.lower() == 'y':
         authorise(first_appl)
     else:
         print('Do you wish to reject this application?')
-        reject = input('Please enter Y or N: ')
+        reject = input('Please enter Y or N:\n')
         if reject.lower() == 'y':
             reject_appl(first_appl)
 
@@ -89,7 +87,7 @@ def authorise(data):
     global pending_sheet
     print('Authorising application.')
     approved.append_row(data)
-     pending_sheet.delete_rows(2)
+    pending_sheet.delete_rows(2)
 
 
 def reject_appl(data):
@@ -107,12 +105,12 @@ if access_level == 'admin':
         print(f'{num_pending} application(s) pending approval')
         print('Do you wish to view the pending application(s)?')
         while True:
-            view = input('Please enter Y or N: ')
+            view = input('Please enter Y or N:\n')
             if view.lower() == 'y':
                 print('First pending application:')
                 view_pending()
                 break
-            elif apply.lower() == 'n':
+            elif view.lower() == 'n':
                 print('Would you like to access other data?')
                 break
             else:
@@ -126,7 +124,7 @@ def get_gross_salary():
     """
     while True:
         print('Please input your gross annual salary.')
-        gross_salary = input('Enter numbers only. EG 29000: ')
+        gross_salary = input('Enter numbers only. EG 29000:\n')
         try:
             int(gross_salary)
         except ValueError:
@@ -143,7 +141,7 @@ def get_length_of_service():
     """
     while True:
         print('Please enter the number of years you have worked at MTL.')
-        length_of_service = input('Number of years: ')
+        length_of_service = input('Number of years:\n')
         try:
             int(length_of_service)
         except ValueError:
@@ -158,7 +156,7 @@ def get_age():
     """
     while True:
         print('Please enter your age on 7/10/21')
-        user_age = input('Age: ')
+        user_age = input('Age:\n')
         try:
             int(user_age)
         except ValueError:
@@ -234,13 +232,13 @@ def calculate_holidays(length_of_service):
     holiday_entitlement = max((22 + length_of_service), 26)
     current_year_entitlement = holiday_entitlement * (10 / 52)
     print('Please enter the number of holidays carried over from July 2021')
-    cf_holidays = int(input('Refer to the CF column of your dashboard: '))
+    cf_holidays = int(input('Refer to the CF column of your dashboard:\n'))
     print('Please enter the number of extra holidays allocated in 2020')
-    bought_hols = int(input('Refer to the bought column of your dashboard: '))
+    bought_hols = int(input('Refer to the bought column of your dashboard:\n'))
     print('Please enter the number of holidays taken since 1/8/21')
-    hols_taken = int(input('Refer to the taken column of your dashboard: '))
+    hols_taken = int(input('Refer to the taken column of your dashboard:\n'))
     print('Please enter the number of holidays booked to be taken by 30/9/21')
-    hols_booked = int(input('Refer to the booked column of your dashboard: '))
+    hols_booked = int(input('Refer to the booked column of your dashboard:\n'))
     rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
     return round(rem_holidays, 2)
 
@@ -256,14 +254,15 @@ def get_overtime_hours():
     """
     while True:
         print('Please enter the excess hours showing on your dashboard')
-        excess_hours = input('Please enter only complete hours: ')
+        print('Please enter a negative figure if time owed is less than 0')
+        excess_hours = input('Please enter only hours:\n')
         try:
             int(excess_hours)
         except ValueError:
             print('Please enter whole numbers only')
         else:
             if int(excess_hours) > 75:
-                print('The maximum number of overtime payable is 75 hours')
+                print('The maximum amount of overtime payable is 75 hours')
             else:
                 return int(excess_hours)
 
@@ -276,13 +275,13 @@ def get_overtime_minutes():
     while True:
         print('Please enter the excess minutes showing on your dashboard')
         print('Please enter a negative figure if time owed is less than 0')
-        excess_minutes = input('Excess minutes: ')
+        excess_minutes = input('Excess minutes:\n')
         try:
             int(excess_minutes)
         except ValueError:
             print('Please enter a number')
         else:
-            if int(excess_minutes) > 59:
+            if int(excess_minutes) > 59 or int(excess_minutes) < -59:
                 print('The number of minutes cannot exceed 59')
             elif int(excess_minutes) == 0:
                 return 0
@@ -346,24 +345,26 @@ def calculate_redundancy():
     holiday_pay = calculate_holiday_pay(num_hols, gross_salary)
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
-    std_red = round(statutory + lieu + holiday_pay + overtime - tax, 2)
-    vol_red = std_red + vol_ex
+    total_gross = (statutory + lieu + holiday_pay + overtime, 2)
+    std_red = round(total_gross - tax, 2)
+    vol_red = round(std_red + vol_ex, 2)
     print(f'\nEx gratia payment for voluntary redundancy: {vol_ex}')
     print(f'Statutory redundancy: {statutory}')
     print(f'Pay in lieu of notice: {lieu}')
     print(f'Unused holidays: {holiday_pay}')
     print(f'Overtime: {overtime}')
+    print(f'Gross: {total_gross}')
     print(f'Total tax deductable: {tax}\n')
     print(f'You would receive {vol_red} for voluntary redundancy.')
     print(f'Your non-voluntary redundancy payment would be {std_red}.\n')
     global staff_data
-    staff_data.extend((gross_salary, statutory, vol_ex, lieu, holiday_pay, overtime, tax, vol_red, 'pending'))
+    staff_data.extend((gross_salary, statutory, vol_ex, lieu, holiday_pay, overtime, tax, vol_red))
 
 
 def check_if_applying():
     print('Do you wish to proceed with your application?')
     while True:
-        apply = input('Please enter Y or N: ')
+        apply = input('Please enter Y or N:\n')
         if apply.lower() == 'y':
             print('Processing application')
             return True
@@ -380,14 +381,47 @@ def update_applications_worksheet(data):
     applications_worksheet.append_row(data)
 
 
+def know_redundancy():
+    print('Please enter your full name')
+
+
+def select_staff_function():
+    while True:
+        print('Please select from the following options')
+        print('1. Calculate redundancy due')
+        print('2. Apply for voluntary redundancy')
+        print('3. View application status')
+        print('Enter Q to quit')
+        staff_choice = input('Enter the option number here:\n')
+        if staff_choice == '1':
+            text1 = colored('\nPlease ensure you have your payroll number and access to', 'yellow', attrs=['bold'])
+            text2 = colored('your time and attendance dashboard.\n', 'yellow', attrs=['bold'])
+            print(text1)
+            print(text2)
+            calculate_redundancy()
+            break
+        elif staff_choice == '2':
+            know_redundancy()
+            break
+        elif staff_choice == '3':
+            print('Checking status')
+            break
+        elif staff_choice.lower() == 'q':
+            print('Exiting programme')
+            exit()
+        else:
+            print('You must select from the available options')
+
+
 if access_level == 'basic':
-    print('Please ensure you have your payroll number and access to your')
-    print('time and attendance records. \n')
-    calculate_redundancy()
+    print('\nLogged in as staff')
+    select_staff_function()
+    """
     application = check_if_applying()
     if application:
-        name = input('Please enter your full name: ')
-        department = input('Please enter your department: ')
+        name = input('Please enter your full name:\n')
+        department = input('Please enter your department:\n')
         staff_data.insert(0, name)
         staff_data.insert(1, department)
         update_applications_worksheet(staff_data)
+    """
