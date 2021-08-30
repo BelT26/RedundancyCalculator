@@ -70,7 +70,7 @@ def view_pending():
     headings = pending[0]
     first_appl = pending[1]
     for head, app in zip(headings, first_appl):
-        print(f"{head}: {app}")
+        print(f'{head}:{app}')
     print('Do you wish to approve this application?')
     approve = input('Please enter Y or N:\n')
     if approve.lower() == 'y':
@@ -381,11 +381,28 @@ def update_applications_worksheet(data):
     applications_worksheet.append_row(data)
 
 
+def validate_payroll_num():
+    name = input('Please enter your full name:\n')
+    staff = SHEET.worksheet('staff').col_values(1)
+    pay_nums = SHEET.worksheet('staff').col_values(2)
+    if name in staff:
+        print('valid name')
+        name_ind = staff.index(name)
+        print(name_ind)
+        payroll = input('Please enter your payroll number:\n')
+        if payroll == pay_nums[name_ind]:
+            print('Access granted')
+        else:
+            print('Incorrect payroll number. Access refused')
+    else:
+        print('Invalid name. Access refused')
+
+
 def know_redundancy():
-    print('Please enter your full name')
+    print('Have you calculated your reduncancy?')
 
 
-def select_staff_function():
+def select_staff_option():
     while True:
         print('Please select from the following options')
         print('1. Calculate redundancy due')
@@ -401,7 +418,7 @@ def select_staff_function():
             calculate_redundancy()
             break
         elif staff_choice == '2':
-            know_redundancy()
+            validate_payroll_num()
             break
         elif staff_choice == '3':
             print('Checking status')
@@ -415,7 +432,7 @@ def select_staff_function():
 
 if access_level == 'basic':
     print('\nLogged in as staff')
-    select_staff_function()
+    select_staff_option()
     """
     application = check_if_applying()
     if application:
