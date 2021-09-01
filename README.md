@@ -47,7 +47,7 @@ Happy coding!
 * Bugs and challenges
 * Deployment
 * Credits
-* Future deployment possibilities
+* Future development possibilities
 
 
 ## Motivation
