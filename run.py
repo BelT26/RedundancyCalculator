@@ -1,6 +1,5 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from colorama import init
 from termcolor import colored
 
 
