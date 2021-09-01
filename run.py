@@ -354,7 +354,8 @@ def add_to_pending():
         staff_data.insert(0, name)
         staff_data.insert(1, department)
         update_applications_worksheet(staff_data)
-        print('Application submitted')
+        print('Thank you. Application submitted')
+        print('You will receive a response within 5 working days')
 
 
 def validate_payroll_num():
@@ -431,6 +432,30 @@ def display_calc_message():
     print(text1)
     print(text2)
     calculate_redundancy()
+
+def view_status():
+    validate_payroll_num()
+    global name
+    pending_names = SHEET.worksheet('applications').col_values(1)
+    approved_names = SHEET.worksheet('approved').col_values(1)
+    rejected_names = SHEET.worksheet('rejected').col_values(1)
+    if name in pending_names:
+        ('Print your application is currently under review.')
+        exit()
+    elif name in approved_names:
+        ('Your application has been approved')
+        exit()
+    elif name in rejected_names:
+        ('Your application has been rejected')
+        exit
+    else:
+        print('No redundancy application has been received')
+        apply = input('Would you like to submit an application now?')
+        if apply:
+            calculate_redundancy()
+        else:
+            print('Please contact HR for any further queries')
+
 
 
 def select_staff_option():
