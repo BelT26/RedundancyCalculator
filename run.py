@@ -105,27 +105,101 @@ def view_pending():
         print('No more pending applications')
 
 
+def check_pending():
+    pending = SHEET.worksheet('applications').get_all_values()
+    num_pending = len(pending)-1
+    print(f'{num_pending} application(s) pending approval')
+    if num_pending > 0:
+        view_pending()
+    else:
+        print('No pending applications')
+
+
+appr_ind = 1
+
+def view_approved():
+    global approved
+    global appr_ind
+    appr = approved.get_all_values()
+    headings = appr[0]
+    first_appl = appr[appr_ind]
+    for head, app in zip(headings, first_appl):
+        print(f'{head}:{app}')
+    view_next = input('\nPress N to view next. Q to quit\n')
+    if view_next.lower() == 'q':
+        exit()
+    elif view_next.lower() == 'n':
+        appr_ind += 1
+        if appr_ind < len(appr):
+            view_approved()
+        else:
+            print('No more approved applications to view')
+  
+    
+def check_approved():
+    approved = SHEET.worksheet('approved').get_all_values()
+    num_approved = len(approved)-1
+    print(f'\n{num_approved} approved application(s)')
+    if num_approved > 0:
+        print('First application: \n')        
+        view_approved()
+    else:
+        print('No approved applications')
+
+
+
+ind = 1
+
+def view_rejected():
+    global rejected
+    global ind
+    rej = rejected.get_all_values()
+    headings = rej[0]
+    first_appl = rej[ind]
+    for head, app in zip(headings, first_appl):
+        print(f'{head}:{app}')
+    view_next = input('\nPress N to view next. Q to quit\n')
+    if view_next.lower() == 'q':
+        exit()
+    elif view_next.lower() == 'n':
+        ind += 1
+        if ind < len(rej):
+            view_rejected()
+        else:
+            print('No more rejected applications to view')
+  
+    
+def check_rejected():
+    rejected = SHEET.worksheet('rejected').get_all_values()
+    num_rejected = len(rejected)-1
+    print(f'\n{num_rejected} rejected application(s)')
+    if num_rejected > 0:
+        print('First application: \n')        
+        view_rejected()
+    else:
+        print('No rejected applications')
+
+
+def show_hr_menu():
+    print('Please select from the following options:')
+    print('1. View / authorise pending applications')
+    print('2. View authorised applications')
+    print('3. View rejected applications')
+    choice = input('Please enter 1, 2 or 3 or Q to quit \n')
+    if choice == '1':
+        check_pending()
+    elif choice == '2':
+        check_approved()
+    elif choice == '3':
+        check_rejected()
+    elif choice.lower() == 'q':
+        exit()
+
+
 if access_level == 'admin':
     if check_password():
-        pending = SHEET.worksheet('applications').get_all_values()
-        num_pending = len(pending)-1
-        print(f'{num_pending} application(s) pending approval')
-        if num_pending > 0:
-            print('Do you wish to view the pending application(s)?')
-            while True:
-                view = input('Please enter Y or N:\n')
-                if view.lower() == 'y':
-                    print('First pending application:')
-                    view_pending()
-                    break
-                elif view.lower() == 'n':
-                    print('Would you like to access other data?')
-                    break
-                else:
-                    print('You must enter Y or N')
-        else:
-            print('No pending applications')
-
+        show_hr_menu()
+      
 
 def get_gross_salary():
     """
