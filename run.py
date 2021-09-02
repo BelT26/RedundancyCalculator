@@ -63,24 +63,6 @@ pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
-
-def view_pending():
-    pending = SHEET.worksheet('applications').get_all_values()
-    headings = pending[0]
-    first_appl = pending[1]
-    for head, app in zip(headings, first_appl):
-        print(f'{head}:{app}')
-    print('Do you wish to approve this application?')
-    approve = input('Please enter Y or N:\n')
-    if approve.lower() == 'y':
-        authorise(first_appl)
-    else:
-        print('Do you wish to reject this application?')
-        reject = input('Please enter Y or N:\n')
-        if reject.lower() == 'y':
-            reject_appl(first_appl)
-
-
 def authorise(data):
     global approved
     global pending_sheet
@@ -97,23 +79,52 @@ def reject_appl(data):
     pending_sheet.delete_rows(2)
 
 
+def view_pending():
+    global pending_sheet
+    pending = pending_sheet.get_all_values()
+    headings = pending[0]
+    first_appl = pending[1]
+    for head, app in zip(headings, first_appl):
+        print(f'{head}:{app}')
+    print('Do you wish to approve this application?')
+    approve = input('Please enter Y or N. Enter Q to quit:\n')
+    if approve.lower() == 'y':
+        authorise(first_appl)
+    elif approve.lower() == 'q':
+        exit()
+    else:
+        print('Do you wish to reject this application?')
+        reject = input('Please enter Y or N:\n')
+        if reject.lower() == 'y':
+            reject_appl(first_appl)
+    num_pending = len(pending)-2
+    print(f'{num_pending} application(s) pending approval')
+    if num_pending > 0:
+        view_pending()
+    else:
+        print('No more pending applications')
+
+
 if access_level == 'admin':
     if check_password():
         pending = SHEET.worksheet('applications').get_all_values()
         num_pending = len(pending)-1
         print(f'{num_pending} application(s) pending approval')
-        print('Do you wish to view the pending application(s)?')
-        while True:
-            view = input('Please enter Y or N:\n')
-            if view.lower() == 'y':
-                print('First pending application:')
-                view_pending()
-                break
-            elif view.lower() == 'n':
-                print('Would you like to access other data?')
-                break
-            else:
-                print('You must enter Y or N')
+        if num_pending > 0:
+            print('Do you wish to view the pending application(s)?')
+            while True:
+                view = input('Please enter Y or N:\n')
+                if view.lower() == 'y':
+                    print('First pending application:')
+                    view_pending()
+                    break
+                elif view.lower() == 'n':
+                    print('Would you like to access other data?')
+                    break
+                else:
+                    print('You must enter Y or N')
+        else:
+            print('No pending applications')
 
 
 def get_gross_salary():
@@ -375,7 +386,8 @@ def validate_payroll_num():
             print(inc_pay)
             exit()
     else:
-        print('Invalid name. Access refused')
+        inv_name = colored('Invalid name. Access refused', 'red')
+        print(inv_name)
         exit()
 
 
@@ -433,30 +445,46 @@ def display_calc_message():
     print(text2)
     calculate_redundancy()
 
+
 def view_status():
-    validate_payroll_num()
     global name
+    name = input('Please enter your full name:\n')
+    staff = SHEET.worksheet('staff').col_values(1)
     pending_names = SHEET.worksheet('applications').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
-    if name in pending_names:
-        ('Print your application is currently under review.')
-        exit()
-    elif name in approved_names:
-        ('Your application has been approved')
-        exit()
-    elif name in rejected_names:
-        ('Your application has been rejected')
-        exit
-    else:
-        print('No redundancy application has been received')
-        apply = input('Would you like to submit an application now?')
-        if apply:
-            calculate_redundancy()
+    pay_nums = SHEET.worksheet('staff').col_values(2)
+    if name in staff:
+        name_ind = staff.index(name)
+        payroll = input('Please enter your payroll number:\n')
+        if payroll == pay_nums[name_ind]:
+            access = colored('Access granted', 'green')
+            print(access)
+            if name in pending_names:
+                print('Your application is currently under review.')
+                exit()
+            elif name in approved_names:
+                print('Your application has been approved')
+                exit()
+            elif name in rejected_names:
+                print('Your application has been rejected')
+                exit()
+            else:
+                print('No redundancy application has been received')
+                print('Would you like to submit an application?')
+                apply = input('Please enter Y or N:\n')
+                if apply.lower() == 'y':
+                    calculate_redundancy()
+                else:
+                    print('Please contact HR for further queries')
         else:
-            print('Please contact HR for any further queries')
-
-
+            inc_pay = colored('Incorrect payroll number. Access refused', 'red')
+            print(inc_pay)
+            exit()
+    else:
+        inv_name = colored('Invalid name. Access refused', 'red')
+        print(inv_name)
+        
 
 def select_staff_option():
     while True:
@@ -464,7 +492,7 @@ def select_staff_option():
         print('1. Calculate redundancy due')
         print('2. Apply for voluntary redundancy')
         print('3. View application status')
-        print('Enter Q to quit')
+        print('Enter Q to quit\n')
         staff_choice = input('Enter the option number here:\n')
         if staff_choice == '1':
             display_calc_message()
@@ -474,7 +502,7 @@ def select_staff_option():
             display_calc_message()
             break
         elif staff_choice == '3':
-            print('Checking status')
+            view_status()
             break
         elif staff_choice.lower() == 'q':
             print('Exiting programme')
