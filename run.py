@@ -24,21 +24,18 @@ print(welcome)
 def get_role():
     """
     assigns an access level to a user based on whether they select
-    to log in as a staff member or  a representative from the Human
+    to log in as an employee or  a representative from the Human
     Resources department
-    rejects any values that are not 'staff' or 'hr'
+    rejects any values that are not 'employee' or 'hr'
     """
+    print('Please select your access level?\n')
     while True:
-        role = input('Would you like to login as staff or HR?\n')
+        role = input('Please enter either employee or HR?\n')
         if role.lower() == 'hr':
             return 'admin'
-        elif role.lower() == 'staff':
+        elif role.lower() == 'employee':
             return 'basic'
-        print('You must select either staff or HR')
-
-
-access_level = get_role()
-
+        
 
 def check_password():
     """
@@ -62,6 +59,7 @@ def check_password():
 pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
+
 
 def authorise(data):
     global approved
@@ -117,6 +115,7 @@ def check_pending():
 
 appr_ind = 1
 
+
 def view_approved():
     global approved
     global appr_ind
@@ -134,21 +133,21 @@ def view_approved():
             view_approved()
         else:
             print('No more approved applications to view')
-  
-    
+
+
 def check_approved():
     approved = SHEET.worksheet('approved').get_all_values()
     num_approved = len(approved)-1
     print(f'\n{num_approved} approved application(s)')
     if num_approved > 0:
-        print('First application: \n')        
+        print('First application: \n')
         view_approved()
     else:
         print('No approved applications')
 
 
-
 ind = 1
+
 
 def view_rejected():
     global rejected
@@ -167,14 +166,14 @@ def view_rejected():
             view_rejected()
         else:
             print('No more rejected applications to view')
-  
-    
+
+
 def check_rejected():
     rejected = SHEET.worksheet('rejected').get_all_values()
     num_rejected = len(rejected)-1
     print(f'\n{num_rejected} rejected application(s)')
     if num_rejected > 0:
-        print('First application: \n')        
+        print('First application: \n')
         view_rejected()
     else:
         print('No rejected applications')
@@ -195,11 +194,11 @@ def show_hr_menu():
     elif choice.lower() == 'q':
         exit()
 
-
+"""
 if access_level == 'admin':
     if check_password():
         show_hr_menu()
-      
+"""
 
 def get_gross_salary():
     """
@@ -410,6 +409,7 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
             highest_rate_tax = (taxable_sum - 137430/12) * 0.45
             return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
+
 name = ''
 staff_data = []
 
@@ -426,14 +426,14 @@ def add_to_pending():
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
     if name in pending_names:
-        ('Print application already submitted and under review.')
+        print('Application already submitted and under review.')
         exit()
     elif name in approved_names:
-        ('Print application already approved')
+        print('Application already approved')
         exit()
     elif name in rejected_names:
-        ('Print application already rejected')
-        exit
+        print('Application already rejected')
+        exit()
     else:
         department = input('Please enter your department:\n')
         staff_data.insert(0, name)
@@ -558,24 +558,19 @@ def view_status():
     else:
         inv_name = colored('Invalid name. Access refused', 'red')
         print(inv_name)
-        
+
 
 def select_staff_option():
     while True:
         print('Please select from the following options')
-        print('1. Calculate redundancy due')
-        print('2. Apply for voluntary redundancy')
-        print('3. View application status')
+        print('1. Calculate redundancy')
+        print('2. View application status')
         print('Enter Q to quit\n')
         staff_choice = input('Enter the option number here:\n')
         if staff_choice == '1':
             display_calc_message()
             break
         elif staff_choice == '2':
-            print('You must verify your redundancy payment before proceding')
-            display_calc_message()
-            break
-        elif staff_choice == '3':
             view_status()
             break
         elif staff_choice.lower() == 'q':
@@ -584,7 +579,20 @@ def select_staff_option():
         else:
             print('You must select from the available options')
 
-
+"""
 if access_level == 'basic':
     print('\nLogged in as staff')
     select_staff_option()
+"""
+
+def main():
+    access_level = get_role()
+    if access_level == 'admin':
+        if check_password():
+            show_hr_menu()
+    if access_level == 'basic':
+        print('\nLogged in as staff')
+        select_staff_option()
+
+
+main()        
