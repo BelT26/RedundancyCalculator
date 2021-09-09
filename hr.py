@@ -20,7 +20,7 @@ SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
 def show_hr_menu():
     while True:
-        print('Please select from the following options:')
+        print('\nPlease select from the following options:')
         print('1. View / authorise pending applications')
         print('2. View authorised applications')
         print('3. View rejected applications')
@@ -28,6 +28,7 @@ def show_hr_menu():
         if choice in ('1', '2', '3'):
             return choice
         elif choice.lower() == 'q':
+            print(colored('\nYou have successfully logged out.', 'yellow'))
             exit()
         print(colored('invalid option\n', 'red'))
 
@@ -44,7 +45,6 @@ def next_action():
             print('You have been successfully logged out \n')
             exit()
         elif next.lower() == 'm':
-            show_hr_menu()
             break
         print(colored('Invalid input', 'red\n'))
 
@@ -125,7 +125,11 @@ def view_approved():
                 print('Next approved application: \n')
                 view_approved()
             else:
-                sprint('No more approved applications to view')
+                print('No more approved applications to view \n')
+                next_action()
+                break
+        else:
+            print(colored('Invalid input', 'red\n'))
 
 
 def check_approved():
@@ -173,13 +177,16 @@ def check_rejected():
 
 
 def hr_main():
-    choice = show_hr_menu()
-    if choice == '1':
-        check_pending()
-    elif choice == '2':
-        check_approved()
-    elif choice == '3':
-        check_rejected()
+    while True:
+        choice = show_hr_menu()
+        if choice == '1':
+            check_pending()
+        elif choice == '2':
+            check_approved()
+        elif choice == '3':
+            check_rejected()
+    next_action()
+    
     
 
 hr_main()
