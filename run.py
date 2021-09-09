@@ -194,11 +194,6 @@ def show_hr_menu():
     elif choice.lower() == 'q':
         exit()
 
-"""
-if access_level == 'admin':
-    if check_password():
-        show_hr_menu()
-"""
 
 def get_gross_salary():
     """
@@ -579,11 +574,6 @@ def select_staff_option():
         else:
             print('You must select from the available options')
 
-"""
-if access_level == 'basic':
-    print('\nLogged in as staff')
-    select_staff_option()
-"""
 
 def main():
     access_level = get_role()
