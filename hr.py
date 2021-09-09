@@ -32,10 +32,21 @@ def show_hr_menu():
         print(colored('invalid option\n', 'red'))
 
 
-
 pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
+
+
+def next_action():
+    while True:
+        next = input('Enter Q to quit. M to return to main menu \n')
+        if next.lower() == 'q':
+            print('You have been successfully logged out \n')
+            exit()
+        elif next.lower() == 'm':
+            show_hr_menu()
+            break
+        print(colored('Invalid input', 'red\n'))
 
 
 def authorise(data):
@@ -78,26 +89,19 @@ def view_pending():
         view_pending()
     else:
         print('No more pending applications')
+        next_action()
 
 
 def check_pending():
     pending = SHEET.worksheet('applications').get_all_values()
     num_pending = len(pending)-1
-    print(f'{num_pending} application(s) pending approval')
+    print(f'\n{num_pending} application(s) pending approval')
     if num_pending > 0:
-        print('Retrieving details of first pending appliction... /n')
+        print('Retrieving details of first pending application... \n')
         view_pending()
     else:
         print('No pending applications')
-        while True:
-            next = input('Enter Q to quit. M to return to main menu /n')
-            if next.lower() == 'q':
-                print('You have been successfully logged out /n')
-                exit()
-            elif next.lower() == 'm':
-                show_hr_menu()
-                break
-            print(colored('Invalid input','red'))
+        next_action()
 
 
 appr_ind = 1
@@ -111,16 +115,17 @@ def view_approved():
     first_appl = appr[appr_ind]
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
-    view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
-    if view_next.lower() == 'q':
-        exit()
-    elif view_next.lower() == 'n':
-        appr_ind += 1
-        if appr_ind < len(appr):
-            print('Next approved application: \n')
-            view_approved()
-        else:
-            print('No more approved applications to view')
+    while True:
+        view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
+        if view_next.lower() == 'q':
+            exit()
+        elif view_next.lower() == 'n':
+            appr_ind += 1
+            if appr_ind < len(appr):
+                print('Next approved application: \n')
+                view_approved()
+            else:
+                sprint('No more approved applications to view')
 
 
 def check_approved():
