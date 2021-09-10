@@ -20,15 +20,15 @@ SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
 def show_hr_menu():
     while True:
-        print('\nPlease select from the following options:')
+        print('\nPlease select from the following options:\n')
         print('1. View / authorise pending applications')
         print('2. View authorised applications')
-        print('3. View rejected applications')
+        print('3. View rejected applications\n')
         choice = input('Please enter 1, 2 or 3 or Q to quit \n')
         if choice in ('1', '2', '3'):
             return choice
         elif choice.lower() == 'q':
-            print(colored('\nYou have successfully logged out.', 'yellow'))
+            print(colored('\nYou have successfully logged out.\n', 'yellow'))
             exit()
         print(colored('invalid option\n', 'red'))
 
@@ -42,7 +42,7 @@ def next_action():
     while True:
         next = input('Enter Q to quit. M to return to main menu \n')
         if next.lower() == 'q':
-            print('You have been successfully logged out \n')
+            print(colored('\nYou have successfully logged out.\n', 'yellow'))
             exit()
         elif next.lower() == 'm':
             break
@@ -52,40 +52,51 @@ def next_action():
 def authorise(data):
     global approved
     global pending_sheet
-    print('Authorising application.')
     approved.append_row(data)
     pending_sheet.delete_rows(2)
+    print(colored('\nApplication authorised.\n', 'blue'))
 
 
 def reject_appl(data):
-    print('Rejecting application.')
     global rejected
     global pending_sheet
     rejected.append_row(data)
     pending_sheet.delete_rows(2)
+    print(colored('\nApplication rejected.', 'blue'))
+
+
+pend_app_ind = 1
+pending = pending_sheet.get_all_values()
+num_pending = len(pending)-1
 
 
 def view_pending():
     global pending_sheet
-    pending = pending_sheet.get_all_values()
+    global pending
+    global pend_app_ind
+    global num_pending
     headings = pending[0]
-    first_appl = pending[1]
+    first_appl = pending[pend_app_ind]
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
-    print('Do you wish to approve this application?')
+    print('\nDo you wish to approve this application?')
     approve = input('Please enter Y or N. Enter Q to quit:\n')
     if approve.lower() == 'y':
         authorise(first_appl)
     elif approve.lower() == 'q':
+        print(colored('\nYou have successfully logged out.\n', 'yellow'))
         exit()
-    else:
-        print('Do you wish to reject this application?')
+    elif approve.lower() == 'n':
+        print('\nDo you wish to reject this application?')
         reject = input('Please enter Y or N:\n')
         if reject.lower() == 'y':
             reject_appl(first_appl)
-    num_pending = len(pending)-2
-    print(f'{num_pending} application(s) pending approval')
+        elif reject.lower() == 'n':
+            print(colored('\nApplication not yet processed.', 'blue'))
+            pend_app_ind += 1
+            num_pending -=1    
     if num_pending > 0:
+        print('Next application pending approval:\n')
         view_pending()
     else:
         print('No more pending applications')
@@ -118,6 +129,7 @@ def view_approved():
     while True:
         view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
         if view_next.lower() == 'q':
+            print(colored('\nYou have successfully logged out.\n', 'yellow'))
             exit()
         elif view_next.lower() == 'n':
             appr_ind += 1
@@ -128,6 +140,8 @@ def view_approved():
                 print('No more approved applications to view \n')
                 next_action()
                 break
+        elif view_next.lower() == 'm':
+            break
         else:
             print(colored('Invalid input', 'red\n'))
 
@@ -141,28 +155,36 @@ def check_approved():
         view_approved()
     else:
         print('No approved applications')
+        next_action()
 
 
-ind = 1
+rej_ind = 1
 
 
 def view_rejected():
     global rejected
-    global ind
+    global rej_ind
     rej = rejected.get_all_values()
     headings = rej[0]
-    first_appl = rej[ind]
+    first_appl = rej[rej_ind]
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
-    view_next = input('\nPress N to view next. Q to quit\n')
-    if view_next.lower() == 'q':
-        exit()
-    elif view_next.lower() == 'n':
-        ind += 1
-        if ind < len(rej):
-            view_rejected()
+    while True:
+        view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
+        if view_next.lower() == 'q':
+            print(colored('\nYou have successfully logged out.\n', 'yellow'))
+            exit()
+        elif view_next.lower() == 'n':
+            rej_ind += 1
+            if rej_ind < len(rej):
+                view_rejected()
+            else:
+                print('No more rejected applications to view')
+                next_action()
+        elif view_next.lower() == 'm':
+            break
         else:
-            print('No more rejected applications to view')
+            print(colored('Invalid input', 'red\n'))
 
 
 def check_rejected():
@@ -170,10 +192,11 @@ def check_rejected():
     num_rejected = len(rejected)-1
     print(f'\n{num_rejected} rejected application(s)')
     if num_rejected > 0:
-        print('First application: \n')
+        print('First rejected application: \n')
         view_rejected()
     else:
         print('No rejected applications')
+        next_action()
 
 
 def hr_main():
@@ -187,10 +210,6 @@ def hr_main():
             check_rejected()
     next_action()
     
-    
 
 hr_main()
 
-    
-
-        
