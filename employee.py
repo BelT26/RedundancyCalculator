@@ -17,15 +17,18 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
-
  
 pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
-
-
-
+def is_integer(input):
+    try:
+        int(input)
+        except ValueError:
+        print('Please enter whole numbers only.')
+        else:
+        return int(input)
 
 def get_gross_salary():
     """
@@ -33,7 +36,7 @@ def get_gross_salary():
     provided
     """
     while True:
-        print('Please input your gross annual salary.')
+        print('\nPlease input your gross annual salary.')
         gross_salary = input('Enter numbers only. For example 29000:\n')
         try:
             int(gross_salary)
@@ -65,7 +68,7 @@ def get_age():
     asks the user for their age and checks that a numerical answer is provided
     """
     while True:
-        print('Please enter your age on 7/10/21')
+        print('\nPlease enter your age on 7/10/21')
         user_age = input('Age:\n')
         try:
             int(user_age)
@@ -141,13 +144,13 @@ def calculate_holidays(length_of_service):
     """
     holiday_entitlement = max((22 + length_of_service), 26)
     current_year_entitlement = holiday_entitlement * (10 / 52)
-    print('Please enter the number of holidays carried over from July 2021')
+    print('\nPlease enter the number of holidays carried over from July 2021')
     cf_holidays = int(input('Refer to the CF column of your dashboard:\n'))
-    print('Please enter the number of extra holidays allocated in 2020')
+    print('\nPlease enter the number of extra holidays allocated in 2020')
     bought_hols = int(input('Refer to the bought column of your dashboard:\n'))
-    print('Please enter the number of holidays taken since 1/8/21')
+    print('\nPlease enter the number of holidays taken since 1/8/21')
     hols_taken = int(input('Refer to the taken column of your dashboard:\n'))
-    print('Please enter the number of holidays booked to be taken by 30/9/21')
+    print('\nPlease enter the number of holidays booked to be taken by 30/9/21')
     hols_booked = int(input('Refer to the booked column of your dashboard:\n'))
     rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
     return round(rem_holidays, 2)
@@ -412,7 +415,7 @@ def view_status():
 
 def select_staff_option():
     while True:
-        print('Please select from the following options')
+        print('\nPlease select from the following options')
         print('1. Calculate redundancy')
         print('2. View application status')
         print('Enter Q to quit\n')
@@ -424,11 +427,11 @@ def select_staff_option():
             view_status()
             break
         elif staff_choice.lower() == 'q':
-            print('Exiting programme')
+            print(colored('\nYou have successfully logged out\n
+            ', 'yellow'))
             exit()
         else:
             print('You must select from the available options')
 
 
-select_staff_option()
       

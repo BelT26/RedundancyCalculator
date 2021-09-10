@@ -210,6 +210,3 @@ def hr_main():
             check_rejected()
     next_action()
     
-
-hr_main()
-
