@@ -5,6 +5,7 @@ import employee
 import hr
 
 
+# code taken from Love Sandwiches project to connect Python with the API
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
@@ -19,12 +20,13 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
+# global variables used in functions reference data in google worksheet
 pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
+# welcome message displayed when file is run
 welcome = colored('Welcome to the Miki Travel Voluntary redundancy calculator.', 'cyan', attrs=['bold'])
-
 
 
 def get_role():
@@ -36,12 +38,13 @@ def get_role():
     """
     print('\nPlease select your access level.')
     while True:
-        role = input('Please enter either employee or HR?\n')
-        if role.lower() == 'hr':
+        role = input('Please enter either "e" for employee or "h" for HR?\n')
+        if role.lower() == 'h':
             return 'admin'
-        elif role.lower() == 'employee':
+        elif role.lower() == 'e':
             return 'basic'
-        
+        print(colored('\nInvalid input\n', 'red'))
+
 
 def check_password():
     """
@@ -63,6 +66,12 @@ def check_password():
 
 
 def main():
+    """
+    prints a welcome message to the user and calls the get_role function
+    dependent on the input provided when get_roll is called, shows the
+    options for employees or checks that the user has the password to access
+    the HR options and displays them if the correct password is provided
+    """
     print(welcome)
     access_level = get_role()
     if access_level == 'admin':
@@ -72,4 +81,4 @@ def main():
         employee.select_staff_option()
 
 
-main()        
+main()

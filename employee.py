@@ -17,7 +17,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
- 
+
 pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
@@ -30,6 +30,7 @@ def is_integer(input):
         print('Please enter whole numbers only.')
     else:
         return int(input)
+
 
 def get_gross_salary():
     """
@@ -142,7 +143,6 @@ def calculate_pay_in_lieu(salary, years_service):
 def get_cf_holidays():
     """
     asks the user for any holidays carried forward from the previous year
-    
     """
     while True:
         print('\nPlease enter the number of holidays carried over from July 2021')
@@ -154,7 +154,6 @@ def get_cf_holidays():
         else:
             cf_holidays = int(cf_holidays)
             return cf_holidays
-
 
 
 def calculate_holidays(length_of_service):
@@ -176,7 +175,7 @@ def calculate_holidays(length_of_service):
 
 def calculate_holiday_pay(num_holidays, salary):
     """
-    returns the holiday pay due by dividing the annual salary by the 
+    returns the holiday pay due by dividing the annual salary by the
     number of weeks in the year multiplied by the number of working days
     per week and then multiplying the figure by the number of holidays
     owed
@@ -220,7 +219,7 @@ def get_overtime_minutes():
             print('Please enter a number')
         else:
             if int(excess_minutes) > 59 or int(excess_minutes) < -59:
-                print(colored('\nThe number of minutes cannot exceed 59','red'))
+                print(colored('\nThe number of minutes cannot exceed 59', 'red'))
             elif int(excess_minutes) == 0:
                 return 0
             else:
@@ -272,9 +271,10 @@ staff_data = []
 def add_to_pending():
     """
     checks that a redundancy application has not already been submitted.
-    advises the user of the application status if an application has
-    already been made, otherwise asks the user to enter their department and
-    calls the function that adds the details to the application worksheet
+    advises the user of the application status if an application has already
+    been made, otherwise asks the user to enter their department, pushes the
+    name and department to staff_data and adds staff_data to the applications
+    worksheet
     """
     global name
     global pending_sheet
@@ -294,7 +294,7 @@ def add_to_pending():
         department = input('Please enter your department:\n')
         staff_data.insert(0, name)
         staff_data.insert(1, department)
-        pending_sheet.append_row(data)
+        pending_sheet.append_row(staff_data)
         print(colored('\nThank you. Application submitted', 'yellow'))
         print(colored('You will receive a response within 5 working days\n', 'yellow'))
 
@@ -323,7 +323,7 @@ def validate_payroll_num():
                 else:
                     payroll_attempts -= 1
                     print(colored('\nIncorrect payroll number.', 'red'))
-            print(colored('Attempts exhausted. Access refused\n', 'red'))  
+            print(colored('Attempts exhausted. Access refused\n', 'red'))
             exit()
         else:
             name_attempts -= 1
@@ -445,6 +445,3 @@ def select_staff_option():
             exit()
         else:
             print('You must select from the available options')
-
-
-      

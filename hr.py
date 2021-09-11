@@ -94,7 +94,7 @@ def view_pending():
         elif reject.lower() == 'n':
             print(colored('\nApplication not yet processed.', 'blue'))
             pend_app_ind += 1
-            num_pending -=1    
+            num_pending -= 1
     if num_pending > 0:
         print('Next application pending approval:\n')
         view_pending()
@@ -209,4 +209,3 @@ def hr_main():
         elif choice == '3':
             check_rejected()
     next_action()
-    
