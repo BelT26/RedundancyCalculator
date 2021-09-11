@@ -269,15 +269,6 @@ name = ''
 staff_data = []
 
 
-def update_applications_worksheet(data):
-    """
-    Saves the redundancy calculation by adding it to the applications
-    worksheet
-    """
-    applications_worksheet = SHEET.worksheet('applications')
-    applications_worksheet.append_row(data)
-
-
 def add_to_pending():
     """
     checks that a redundancy application has not already been submitted.
@@ -286,6 +277,7 @@ def add_to_pending():
     calls the function that adds the details to the application worksheet
     """
     global name
+    global pending_sheet
     pending_names = SHEET.worksheet('applications').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
@@ -302,7 +294,7 @@ def add_to_pending():
         department = input('Please enter your department:\n')
         staff_data.insert(0, name)
         staff_data.insert(1, department)
-        update_applications_worksheet(staff_data)
+        pending_sheet.append_row(data)
         print(colored('\nThank you. Application submitted', 'yellow'))
         print(colored('You will receive a response within 5 working days\n', 'yellow'))
 
