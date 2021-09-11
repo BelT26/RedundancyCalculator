@@ -200,7 +200,7 @@ def get_overtime_hours():
             print('Please enter whole numbers only')
         else:
             if int(excess_hours) > 75:
-                print('The maximum amount of overtime payable is 75 hours')
+                print(colored('\nThe maximum amount of overtime payable is 75 hours', 'red'))
             else:
                 return int(excess_hours)
 
@@ -220,7 +220,7 @@ def get_overtime_minutes():
             print('Please enter a number')
         else:
             if int(excess_minutes) > 59 or int(excess_minutes) < -59:
-                print('The number of minutes cannot exceed 59')
+                print(colored('\nThe number of minutes cannot exceed 59','red'))
             elif int(excess_minutes) == 0:
                 return 0
             else:
@@ -274,8 +274,6 @@ def update_applications_worksheet(data):
     Saves the redundancy calculation by adding it to the applications
     worksheet
     """
-    
-    print('Updating worksheet')
     applications_worksheet = SHEET.worksheet('applications')
     applications_worksheet.append_row(data)
 
@@ -315,25 +313,31 @@ def validate_payroll_num():
     number entered match the details stored
     """
     global name
-    name = input('Please enter your full name:\n')
-    name = name.upper()
     staff = SHEET.worksheet('staff').col_values(1)
     pay_nums = SHEET.worksheet('staff').col_values(2)
-    if name  in staff:
-        name_ind = staff.index(name)
-        payroll = input('Please enter your payroll number:\n')
-        if payroll == pay_nums[name_ind]:
-            access = colored('Access granted\n', 'green')
-            print(access)
-            add_to_pending()
-        else:
-            inc_pay = colored('Incorrect payroll number. Access refused\n', 'red')
-            print(inc_pay)
+    name_attempts = 3
+    while name_attempts > 0:
+        name = input('\nPlease enter your full name:\n')
+        name = name.upper()
+        if name in staff:
+            name_ind = staff.index(name)
+            payroll_attempts = 3
+            while payroll_attempts > 0:
+                payroll = input('\nPlease enter your payroll number:\n')
+                if payroll == pay_nums[name_ind]:
+                    print(colored('Access granted\n', 'green'))
+                    add_to_pending()
+                    break
+                else:
+                    payroll_attempts -= 1
+                    print(colored('\nIncorrect payroll number.', 'red'))
+            print(colored('Attempts exhausted. Access refused\n', 'red'))  
             exit()
-    else:
-        inv_name = colored('Invalid name. Access refused\n', 'red')
-        print(inv_name)
-        exit()
+        else:
+            name_attempts -= 1
+            print(colored('Invalid name', 'red'))
+    print(colored('Attempts exhausted. Access refused\n', 'red'))
+    exit()
 
 
 def check_if_applying():
@@ -341,7 +345,6 @@ def check_if_applying():
     while True:
         apply = input('Please enter Y or N:\n')
         if apply.lower() == 'y':
-            print('\nProcessing application')
             validate_payroll_num()
             break
         elif apply.lower() == 'n':
@@ -422,8 +425,7 @@ def view_status():
                 apply = input('Please enter Y or N:\n')
                 if apply.lower() == 'y':
                     calculate_redundancy()
-                else:
-                    print('Please contact HR for further queries')
+                print('Please contact HR for further queries\n')
         else:
             inc_pay = colored('Incorrect payroll number. Access refused', 'red')
             print(inc_pay)
