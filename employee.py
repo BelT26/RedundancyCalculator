@@ -22,12 +22,13 @@ pending_sheet = SHEET.worksheet('applications')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
+
 def is_integer(input):
     try:
         int(input)
-        except ValueError:
+    except ValueError:
         print('Please enter whole numbers only.')
-        else:
+    else:
         return int(input)
 
 def get_gross_salary():
@@ -138,14 +139,31 @@ def calculate_pay_in_lieu(salary, years_service):
     return round((salary / 12), 2)
 
 
+def get_cf_holidays():
+    """
+    asks the user for any holidays carried forward from the previous year
+    
+    """
+    while True:
+        print('\nPlease enter the number of holidays carried over from July 2021')
+        cf_holidays = input('Refer to the CF column of your dashboard:\n')
+        try:
+            int(cf_holidays)
+        except ValueError:
+            print('Please only enter numbers')
+        else:
+            cf_holidays = int(cf_holidays)
+            return cf_holidays
+
+
+
 def calculate_holidays(length_of_service):
     """
     calculates the number of unused holidays that the user should be paid for
     """
     holiday_entitlement = max((22 + length_of_service), 26)
     current_year_entitlement = holiday_entitlement * (10 / 52)
-    print('\nPlease enter the number of holidays carried over from July 2021')
-    cf_holidays = int(input('Refer to the CF column of your dashboard:\n'))
+    cf_holidays = get_cf_holidays()
     print('\nPlease enter the number of extra holidays allocated in 2020')
     bought_hols = int(input('Refer to the bought column of your dashboard:\n'))
     print('\nPlease enter the number of holidays taken since 1/8/21')
@@ -173,9 +191,9 @@ def get_overtime_hours():
     caps the overtime at 75 hours
     """
     while True:
-        print('Please enter the excess hours showing on your dashboard')
-        print('Please enter a negative figure if time owed is less than 0')
-        excess_hours = input('Please enter only hours:\n')
+        print('\nPlease enter the excess hours showing on your dashboard')
+        print('Enter a negative figure if time owed is less than 0')
+        excess_hours = input('Please enter only the hours:\n')
         try:
             int(excess_hours)
         except ValueError:
@@ -193,7 +211,7 @@ def get_overtime_minutes():
     converts the minutes into a fraction of an hour
     """
     while True:
-        print('Please enter the excess minutes showing on your dashboard')
+        print('\nPlease enter the excess minutes showing on your dashboard')
         print('Please enter a negative figure if time owed is less than 0')
         excess_minutes = input('Excess minutes:\n')
         try:
@@ -298,9 +316,10 @@ def validate_payroll_num():
     """
     global name
     name = input('Please enter your full name:\n')
+    name = name.upper()
     staff = SHEET.worksheet('staff').col_values(1)
     pay_nums = SHEET.worksheet('staff').col_values(2)
-    if name in staff:
+    if name  in staff:
         name_ind = staff.index(name)
         payroll = input('Please enter your payroll number:\n')
         if payroll == pay_nums[name_ind]:
@@ -322,11 +341,11 @@ def check_if_applying():
     while True:
         apply = input('Please enter Y or N:\n')
         if apply.lower() == 'y':
-            print('Processing application')
+            print('\nProcessing application')
             validate_payroll_num()
             break
         elif apply.lower() == 'n':
-            print('Application not processed')
+            print('\nApplication not processed')
             print('Your details have not been stored.\n')
             exit()
         else:
@@ -348,18 +367,19 @@ def calculate_redundancy():
     holiday_pay = calculate_holiday_pay(num_hols, gross_salary)
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
-    std_red = round(statutory + lieu + holiday_pay + overtime - tax, 2)
-    vol_red = round(std_red + vol_ex, 2)
+    vol_red = round(vol_ex + statutory + lieu + holiday_pay + overtime - tax, 2)
     total_gross = round(vol_ex + statutory + lieu + holiday_pay + overtime, 2)
-    print(f'\nEx gratia payment for voluntary redundancy: {vol_ex}')
+    print(colored('\nYour redundancy has been calculated:\n', 'white', attrs=['bold']))
+    print('=' * 54)
+    print(f'\nExtra payment for voluntary redundancy: {vol_ex}')
     print(f'Statutory redundancy: {statutory}')
     print(f'Pay in lieu of notice: {lieu}')
     print(f'Unused holidays: {holiday_pay}')
     print(f'Overtime: {overtime}')
     print(f'Gross: {total_gross}')
     print(f'Total tax deductable: {tax}\n')
-    print(f'You would receive {vol_red} for voluntary redundancy.')
-    print(f'Your non-voluntary redundancy payment would be {std_red}.\n')
+    print('=' * 54)
+    print(colored(f'\nYou would receive {vol_red} for voluntary redundancy.\n', 'yellow', attrs=['bold']))
     global staff_data
     staff_data.extend((gross_salary, statutory, vol_ex, lieu, holiday_pay, overtime, tax, vol_red))
     check_if_applying()
@@ -427,8 +447,7 @@ def select_staff_option():
             view_status()
             break
         elif staff_choice.lower() == 'q':
-            print(colored('\nYou have successfully logged out\n
-            ', 'yellow'))
+            print(colored('\nYou have successfully logged out\n', 'yellow'))
             exit()
         else:
             print('You must select from the available options')
