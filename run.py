@@ -38,7 +38,7 @@ def get_role():
     """
     print('\nPlease select your access level.')
     while True:
-        role = input('Please enter either "e" for employee or "h" for HR?\n')
+        role = input('Please enter either "e" for employee or "h" for HR:\n')
         if role.lower() == 'h':
             return 'admin'
         elif role.lower() == 'e':

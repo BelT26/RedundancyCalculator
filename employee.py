@@ -333,7 +333,7 @@ def validate_payroll_num():
     pay_nums = SHEET.worksheet('staff').col_values(2)
     name_attempts = 3
     authorised = False
-    while name_attempts > 0 and authorised == False:
+    while name_attempts > 0 and authorised is False:
         name = input('\nPlease enter your full name:\n')
         name = name.upper()
         if name in staff:
