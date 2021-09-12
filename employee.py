@@ -284,6 +284,21 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
             return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
 
+def calculate_NI(salary, overtime, pay_in_lieu, holidays):
+    standard_rate_NI = 0
+    lower_rate_NI = 0
+    NI_deductable_sum = (salary/12) + overtime + pay_in_lieu + holidays - (9568/12)
+    if NI_deductable_sum < 0:
+        return 0
+    elif NI_deductable_sum < (40702/12):
+        standard_rate_NI = NI_deductable_sum * 0.12
+        return standard_rate_NI
+    else:
+        standard_rate_NI = (40702/12) * 0.12
+        lower_rate_NI = (NI_deductable_sum - 40702/12) * 0.02
+        return standard_rate_NI + lower_rate_NI
+        
+
 name = ''
 staff_data = []
 
@@ -394,7 +409,8 @@ def calculate_redundancy():
     holiday_pay = calculate_holiday_pay(num_hols, gross_salary)
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
-    vol_red = round(vol_ex + statutory + lieu + holiday_pay + overtime - tax, 2)
+    NI = round(calculate_NI(gross_salary, overtime, lieu, holiday_pay), 2)
+    vol_red = round(vol_ex + statutory + lieu + holiday_pay + overtime - tax - NI, 2)
     total_gross = round(vol_ex + statutory + lieu + holiday_pay + overtime, 2)
     print(colored('\nYour redundancy has been calculated:\n', 'white', attrs=['bold']))
     print('=' * 54)
@@ -404,9 +420,10 @@ def calculate_redundancy():
     print(f'Unused holidays: {holiday_pay}')
     print(f'Overtime: {overtime}')
     print(f'Gross: {total_gross}')
-    print(f'Total tax deductable: {tax}\n')
+    print(f'Total tax deductable: {tax}')
+    print(f'NI contributions: {NI}\n')
     print('=' * 54)
-    print(colored(f'\nYou would receive {vol_red} for voluntary redundancy.\n', 'yellow', attrs=['bold']))
+    print(colored(f'\nYou would receive a net payment of {vol_red} for voluntary redundancy.\n', 'yellow', attrs=['bold']))
     global staff_data
     staff_data.extend((gross_salary, statutory, vol_ex, lieu, holiday_pay, overtime, tax, vol_red))
     check_if_applying()
@@ -423,6 +440,7 @@ def display_calc_message():
 def view_status():
     global name
     name = input('Please enter your full name:\n')
+    name = name.upper()
     staff = SHEET.worksheet('staff').col_values(1)
     pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
@@ -435,29 +453,30 @@ def view_status():
             access = colored('Access granted', 'green')
             print(access)
             if name in pending_names:
-                print('Your application is currently under review.')
+                print('\nYour application is currently under review.\n')
                 exit()
             elif name in approved_names:
-                print('Your application has been approved')
+                print('\nYour application has been approved\n')
                 exit()
             elif name in rejected_names:
-                print('Your application has been rejected')
+                print('\nYour application has been rejected\n')
                 exit()
             else:
-                print('Your application has not been received')
+                print('\nYour application has not been received')
                 print('Would you like to submit an application?')
                 apply = input('Please enter Y or N:\n')
                 if apply.lower() == 'y':
                     calculate_redundancy()
-                print('Please contact HR for further queries\n')
+                else:
+                    print('Please contact HR for further queries\n')
+                    exit()
         else:
             inc_pay = colored('Incorrect payroll number. Access refused', 'red')
             print(inc_pay)
             exit()
     else:
-        inv_name = colored('Invalid name. Access refused', 'red')
-        print(inv_name)
-
+        print(colored('Invalid name. Access refused', 'red'))
+    
 
 def select_staff_option():
     while True:
