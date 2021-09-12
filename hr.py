@@ -17,8 +17,16 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
+pending_sheet = SHEET.worksheet('applications')
+approved = SHEET.worksheet('approved')
+rejected = SHEET.worksheet('rejected')
+
 
 def show_hr_menu():
+    """
+    asks the user to choose between three actions and returns the
+    choice if valid input is provided
+    """
     while True:
         print('\nPlease select from the following options:\n')
         print('1. View / authorise pending applications')
@@ -33,12 +41,11 @@ def show_hr_menu():
         print(colored('invalid option\n', 'red'))
 
 
-pending_sheet = SHEET.worksheet('applications')
-approved = SHEET.worksheet('approved')
-rejected = SHEET.worksheet('rejected')
-
-
 def next_action():
+    """
+    provides the user with the option to exit the programme or return to 
+    the main HR menu
+    """
     while True:
         next = input('Enter Q to quit. M to return to main menu \n')
         if next.lower() == 'q':
@@ -50,6 +57,10 @@ def next_action():
 
 
 def authorise(data):
+    """
+    deletes an application from the applications worksheet and adds it to the
+    approved worksheet
+    """
     global approved
     global pending_sheet
     approved.append_row(data)
@@ -58,6 +69,10 @@ def authorise(data):
 
 
 def reject_appl(data):
+    """
+    deletes an application from the applications worksheet and adds it to the
+    rejected worksheet
+    """
     global rejected
     global pending_sheet
     rejected.append_row(data)
@@ -65,12 +80,23 @@ def reject_appl(data):
     print(colored('\nApplication rejected.', 'blue'))
 
 
+# variables used in the view pending and check pending functions
 pend_app_ind = 1
 pending = pending_sheet.get_all_values()
 num_pending = len(pending)-1
 
 
 def view_pending():
+    """
+    allows the user to view each application that is yet to be approved
+    or rejected in turn.  Details of each application are displayed by zipping
+    together the headings on the application worksheet with the row containing
+    the info about the application.  The user has the opportunity to approve or
+    reject each request.  If they do so the application is then moved to either
+    the approved or the rejected worksheet.  If they choose to do neither the
+    pend_app_ind  and num_pending variables are updated so that the next
+    application is displayed
+    """
     global pending_sheet
     global pending
     global pend_app_ind
@@ -104,8 +130,16 @@ def view_pending():
 
 
 def check_pending():
-    pending = SHEET.worksheet('applications').get_all_values()
-    num_pending = len(pending)-1
+    """
+    checks the applications worksheet to see how many applications
+    have yet to be rejected or approved and lets the user know how
+    many there are.  If there are no pending applications the user
+    is provided with the option to quit or return to the main menu
+    otherwise the view_pending function is called to allow the user
+    to view the applications
+    """
+    global pending
+    global num_pending
     print(f'\n{num_pending} application(s) pending approval')
     if num_pending > 0:
         print('Retrieving details of first pending application... \n')
@@ -119,6 +153,12 @@ appr_ind = 1
 
 
 def view_approved():
+    """
+    allows the user to view details of applications that have been approved.
+    after viewing each application the user is offered the possibility of
+    exiting the application or returning to the main menu if they do not wish
+    to carry on viewing the applications.
+    """
     global approved
     global appr_ind
     appr = approved.get_all_values()
@@ -147,6 +187,14 @@ def view_approved():
 
 
 def check_approved():
+    """
+    checks the approved worksheet to see how many applications
+    have been approved and lets the user know the total.
+    If there are no approved applications the user is provided
+    with the option to quit or return to the main menu otherwise
+    the view_approved function is called to allow the user
+    to view the applications
+    """
     approved = SHEET.worksheet('approved').get_all_values()
     num_approved = len(approved)-1
     print(f'\n{num_approved} approved application(s)')
@@ -162,6 +210,12 @@ rej_ind = 1
 
 
 def view_rejected():
+    """
+    allows the user to view details of applications that have been rejected.
+    after viewing each application the user is offered the possibility of
+    exiting the application or returning to the main menu if they do not wish
+    to carry on viewing the applications.
+    """
     global rejected
     global rej_ind
     rej = rejected.get_all_values()
@@ -188,6 +242,14 @@ def view_rejected():
 
 
 def check_rejected():
+    """
+    checks the rejected worksheet to see how many applications
+    have been rejected and lets the user know the total.
+    If there are no refected applications the user is provided
+    with the option to quit or return to the main menu otherwise
+    the view_rejected function is called to allow the user
+    to view the applications
+    """
     rejected = SHEET.worksheet('rejected').get_all_values()
     num_rejected = len(rejected)-1
     print(f'\n{num_rejected} rejected application(s)')
@@ -200,6 +262,11 @@ def check_rejected():
 
 
 def hr_main():
+    """
+    processes the choice returned from show_hr_menu. 
+    once the action has been completed allows the user
+    to select their next action
+    """
     while True:
         choice = show_hr_menu()
         if choice == '1':
