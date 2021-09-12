@@ -26,7 +26,7 @@ approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
 # welcome message displayed when file is run
-welcome = colored('Welcome to the ABC Voluntary redundancy calculator.', 'cyan', attrs=['bold'])
+welcome = colored('Welcome to the ABC voluntary redundancy calculator.', 'cyan', attrs=['bold'])
 
 
 def get_role():

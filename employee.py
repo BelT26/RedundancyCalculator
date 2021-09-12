@@ -184,7 +184,9 @@ def calculate_holidays(length_of_service):
     hols_taken = get_taken_hols()
     hols_booked = get_booked_hols()
     rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
-    print(f'Total outstanding holidays: {round(rem_holidays, 2)} days/n')
+    print('=' * 54)
+    print(f'\nTotal outstanding holidays: {round(rem_holidays, 2)} days\n')
+    print('=' * 54)
     return round(rem_holidays, 2)
 
 
@@ -330,7 +332,8 @@ def validate_payroll_num():
     staff = SHEET.worksheet('staff').col_values(1)
     pay_nums = SHEET.worksheet('staff').col_values(2)
     name_attempts = 3
-    while name_attempts > 0:
+    authorised = False
+    while name_attempts > 0 and authorised == False:
         name = input('\nPlease enter your full name:\n')
         name = name.upper()
         if name in staff:
@@ -341,6 +344,7 @@ def validate_payroll_num():
                 if payroll == pay_nums[name_ind]:
                     print(colored('Access granted\n', 'green'))
                     add_to_pending()
+                    authorised = True
                     break
                 else:
                     payroll_attempts -= 1
