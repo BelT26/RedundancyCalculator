@@ -21,7 +21,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
 # global variables used in functions reference data in google worksheet
-pending_sheet = SHEET.worksheet('applications')
+pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
@@ -67,7 +67,7 @@ def check_password():
 
 def main():
     """
-    prints a welcome message to the user and calls the get_role function
+    prints a welcome message to the user and calls the get_role function.
     dependent on the input provided when get_roll is called, shows the
     options for employees or checks that the user has the password to access
     the HR options and displays them if the correct password is provided

@@ -18,7 +18,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
 
-pending_sheet = SHEET.worksheet('applications')
+pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
@@ -278,7 +278,7 @@ def add_to_pending():
     """
     global name
     global pending_sheet
-    pending_names = SHEET.worksheet('applications').col_values(1)
+    pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
     if name in pending_names:
@@ -392,7 +392,7 @@ def view_status():
     global name
     name = input('Please enter your full name:\n')
     staff = SHEET.worksheet('staff').col_values(1)
-    pending_names = SHEET.worksheet('applications').col_values(1)
+    pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
     pay_nums = SHEET.worksheet('staff').col_values(2)

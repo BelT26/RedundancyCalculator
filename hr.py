@@ -17,7 +17,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
-pending_sheet = SHEET.worksheet('applications')
+pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
@@ -129,26 +129,6 @@ def view_pending():
         next_action()
 
 
-def check_pending():
-    """
-    checks the applications worksheet to see how many applications
-    have yet to be rejected or approved and lets the user know how
-    many there are.  If there are no pending applications the user
-    is provided with the option to quit or return to the main menu
-    otherwise the view_pending function is called to allow the user
-    to view the applications
-    """
-    global pending
-    global num_pending
-    print(f'\n{num_pending} application(s) pending approval')
-    if num_pending > 0:
-        print('Retrieving details of first pending application... \n')
-        view_pending()
-    else:
-        print('No pending applications')
-        next_action()
-
-
 appr_ind = 1
 
 
@@ -186,25 +166,6 @@ def view_approved():
             print(colored('Invalid input', 'red\n'))
 
 
-def check_approved():
-    """
-    checks the approved worksheet to see how many applications
-    have been approved and lets the user know the total.
-    If there are no approved applications the user is provided
-    with the option to quit or return to the main menu otherwise
-    the view_approved function is called to allow the user
-    to view the applications
-    """
-    approved = SHEET.worksheet('approved').get_all_values()
-    num_approved = len(approved)-1
-    print(f'\n{num_approved} approved application(s)')
-    if num_approved > 0:
-        print('First application: \n')
-        view_approved()
-    else:
-        print('No approved applications')
-        next_action()
-
 
 rej_ind = 1
 
@@ -241,23 +202,28 @@ def view_rejected():
             print(colored('Invalid input', 'red\n'))
 
 
-def check_rejected():
+def check_worksheet(status):
     """
-    checks the rejected worksheet to see how many applications
-    have been rejected and lets the user know the total.
-    If there are no refected applications the user is provided
-    with the option to quit or return to the main menu otherwise
-    the view_rejected function is called to allow the user
-    to view the applications
+    checks the selected worksheet and lets the user know the total
+    number of applications on it. If there are no applications the user is 
+    provided with the option to quit or return to the main menu otherwise
+    the appropriate function is called to enable the user to view full
+    details of the selected type of applications
     """
-    rejected = SHEET.worksheet('rejected').get_all_values()
-    num_rejected = len(rejected)-1
-    print(f'\n{num_rejected} rejected application(s)')
-    if num_rejected > 0:
-        print('First rejected application: \n')
-        view_rejected()
+    status_data = SHEET.worksheet(status).get_all_values()
+    num_apps = len(status_data)-1
+    print(f'\n{num_apps} {status} application(s)')
+    if num_apps > 0:
+        print(f'First {status} application: \n')
+        if status == 'rejected':
+            view_rejected()
+        elif status == 'approved':
+            view_approved()
+        elif status == 'pending':
+            view_pending()
+
     else:
-        print('No rejected applications')
+        print(f'No {status} applications\n')
         next_action()
 
 
@@ -270,9 +236,9 @@ def hr_main():
     while True:
         choice = show_hr_menu()
         if choice == '1':
-            check_pending()
+            check_worksheet('pending')
         elif choice == '2':
-            check_approved()
+            check_worksheet('approved')
         elif choice == '3':
-            check_rejected()
+            check_worksheet('rejected')
     next_action()
