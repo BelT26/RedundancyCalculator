@@ -51,7 +51,7 @@ def get_length_of_service():
     checks that a numerical answer is provided
     """
     while True:
-        print('Please enter the number of years you have worked at MTL.')
+        print('Please enter the number of years you have worked at ABC.')
         length_of_service = is_integer()
         return length_of_service
 
@@ -61,7 +61,7 @@ def get_age():
     asks the user for their age and checks that a numerical answer is provided
     """
     while True:
-        print('\nPlease enter your age on 7/10/21')
+        print('\nPlease enter your age on 4/10/21')
         user_age = is_integer()
         return user_age
 
@@ -72,9 +72,9 @@ def calculate_voluntary_extra(years_service, weekly_pay):
     for voluntary redundancy
     """
     if years_service >= 5:
-        return round(weekly_pay * 6, 2)
-    else:
         return round(weekly_pay * 4, 2)
+    else:
+        return round(weekly_pay * 2, 2)
 
 
 def calculate_statutory(age, years_service, weekly_pay):
@@ -163,12 +163,12 @@ def get_taken_hols():
 
 def get_booked_hols():
     """
-    asks the user for any holidays booked to be taken before the end of 
+    asks the user for any holidays booked to be taken before the end of
     the consultation period and checks that a number is provided
     """
     while True:
-        print('\nPlease enter the number of holidays booked to be taken by 30/9/21')
-        print('Refer to the booked column of your dashboard.h')     
+        print('\nEnter the number of holidays booked to be taken by 4/10/21')
+        print('Refer to the booked column of your dashboard.')     
         booked_hols = is_integer()
         return booked_hols
 
@@ -178,12 +178,13 @@ def calculate_holidays(length_of_service):
     calculates the number of unused holidays that the user should be paid for
     """
     holiday_entitlement = max((22 + length_of_service), 26)
-    current_year_entitlement = holiday_entitlement * (10 / 52)
+    current_year_entitlement = holiday_entitlement * (9 / 52)
     cf_holidays = get_cf_holidays()
     bought_hols = get_bought_holidays()
     hols_taken = get_taken_hols()
     hols_booked = get_booked_hols()
     rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
+    print(f'Total outstanding holidays: {round(rem_holidays, 2)} days/n')
     return round(rem_holidays, 2)
 
 
