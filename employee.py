@@ -62,13 +62,8 @@ def get_age():
     """
     while True:
         print('\nPlease enter your age on 7/10/21')
-        user_age = input('Age:\n')
-        try:
-            int(user_age)
-        except ValueError:
-            print('Please enter whole numbers only')
-        else:
-            return int(user_age)
+        user_age = is_integer()
+        return user_age
 
 
 def calculate_voluntary_extra(years_service, weekly_pay):
@@ -133,18 +128,49 @@ def calculate_pay_in_lieu(salary, years_service):
 
 def get_cf_holidays():
     """
-    asks the user for any holidays carried forward from the previous year
+    asks the user for any holidays carried forward from the previous year and
+    checks a number is provided
     """
     while True:
         print('\nPlease enter the number of holidays carried over from July 2021')
-        cf_holidays = input('Refer to the CF column of your dashboard:\n')
-        try:
-            int(cf_holidays)
-        except ValueError:
-            print('Please only enter numbers')
-        else:
-            cf_holidays = int(cf_holidays)
-            return cf_holidays
+        print('Refer to the CF column of your dashboard.')
+        cf_holidays = is_integer()
+        return cf_holidays
+
+
+def get_bought_holidays():
+    """
+    asks the user for any holidays bought and checks a number is provided
+    """
+    while True:
+        print('\nPlease enter the number of extra holidays allocated in 2020')
+        print('Refer to the "bought" column of your dashboard.')
+        bought_hols = is_integer()
+        return bought_hols
+
+
+def get_taken_hols():
+    """
+    asks the user for any holidays taken since the start of the financial year
+    and checks a number is provided
+    """
+    while True:
+        print('\nPlease enter the number of holidays taken since 1/8/21')
+        print('Refer to the "taken" column of your dashboard.')
+        taken_hols = is_integer()
+        return taken_hols
+
+
+def get_booked_hols():
+    """
+    asks the user for any holidays booked to be taken before the end of 
+    the consultation period and checks that a number is provided
+    """
+    while True:
+        print('\nPlease enter the number of holidays booked to be taken by 30/9/21')
+        print('Refer to the booked column of your dashboard.h')     
+        booked_hols = is_integer()
+        return booked_hols
 
 
 def calculate_holidays(length_of_service):
@@ -154,12 +180,9 @@ def calculate_holidays(length_of_service):
     holiday_entitlement = max((22 + length_of_service), 26)
     current_year_entitlement = holiday_entitlement * (10 / 52)
     cf_holidays = get_cf_holidays()
-    print('\nPlease enter the number of extra holidays allocated in 2020')
-    bought_hols = int(input('Refer to the bought column of your dashboard:\n'))
-    print('\nPlease enter the number of holidays taken since 1/8/21')
-    hols_taken = int(input('Refer to the taken column of your dashboard:\n'))
-    print('\nPlease enter the number of holidays booked to be taken by 30/9/21')
-    hols_booked = int(input('Refer to the booked column of your dashboard:\n'))
+    bought_hols = get_bought_holidays()
+    hols_taken = get_taken_hols()
+    hols_booked = get_booked_hols()
     rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
     return round(rem_holidays, 2)
 
@@ -171,7 +194,6 @@ def calculate_holiday_pay(num_holidays, salary):
     per week and then multiplying the figure by the number of holidays
     owed
     """
-
     return round(num_holidays * salary / (52 * 5), 2)
 
 
@@ -272,14 +294,22 @@ def add_to_pending():
     pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
+    received = colored('An application in your name has already been submitted.','yellow')
+    contact = colored('Please contact HR for further queries/n', 'yellow')
     if name in pending_names:
-        print('Application already submitted and under review.')
+        print(received)
+        print('It is currently under review')
+        print(contact)
         exit()
     elif name in approved_names:
-        print('Application already approved')
+        print(received)
+        print('It has already been approved')
+        print(contact)
         exit()
     elif name in rejected_names:
-        print('Application already rejected')
+        print(received)
+        print('Your application has been rejected')
+        print(contact)
         exit()
     else:
         department = input('Please enter your department:\n')
@@ -314,13 +344,15 @@ def validate_payroll_num():
                 else:
                     payroll_attempts -= 1
                     print(colored('\nIncorrect payroll number.', 'red'))
-            print(colored('Attempts exhausted. Access refused\n', 'red'))
-            exit()
+            if payroll_attempts == 0:
+                print(colored('Attempts exhausted. Access refused\n', 'red'))
+                exit()
         else:
             name_attempts -= 1
             print(colored('Invalid name', 'red'))
-    print(colored('Attempts exhausted. Access refused\n', 'red'))
-    exit()
+    if name_attempts == 0:
+        print(colored('Attempts exhausted. Access refused\n', 'red'))
+        exit()
 
 
 def check_if_applying():
@@ -332,7 +364,7 @@ def check_if_applying():
             break
         elif apply.lower() == 'n':
             print('\nApplication not processed')
-            print('Your details have not been stored.\n')
+            print('The information provided has not been stored.\n')
             exit()
         else:
             print(colored('Invalid input', 'red'))
