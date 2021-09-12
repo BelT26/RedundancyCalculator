@@ -25,14 +25,14 @@ rejected = SHEET.worksheet('rejected')
 
 def is_integer():
     while True:
-        num = input('Please enter numbers only\n')      
+        num = input('Please enter numbers only\n')
         try:
             int(num)
         except ValueError:
             print(colored('Invalid input', 'red'))
         else:
             return int(num)
-          
+
 
 def get_gross_salary():
     """
@@ -43,7 +43,7 @@ def get_gross_salary():
     print('For example 29000')
     gross_salary = is_integer()
     return gross_salary
-    
+
 
 def get_length_of_service():
     """
@@ -119,11 +119,15 @@ def calculate_pay_in_lieu(salary, years_service):
     """
     returns the amount of pay the user would receive in lieu of notice
     if the years worked are 5 or more, returns 1 week's pay per year
-    if the years worked are less than 5 defaults to 1 month's pay
+    if the years worked are less than 5 defaults to 4 week's pay
+    total notice period payable is capped at 12 weeks.
     """
-    if years_service > 4:
-        return round((salary / 52) * years_service, 2)
-    return round((salary / 12), 2)
+    weeks_notice = 4
+    if years_service >= 12:
+        weeks_notice = 12
+    elif years_service > 4 and years_service < 12:
+        weeks_notice = years_service
+    return round((salary / 52) * weeks_notice, 2)
 
 
 def get_cf_holidays():
@@ -168,7 +172,7 @@ def get_booked_hols():
     """
     while True:
         print('\nEnter the number of holidays booked to be taken by 4/10/21')
-        print('Refer to the booked column of your dashboard.')     
+        print('Refer to the booked column of your dashboard.')
         booked_hols = is_integer()
         return booked_hols
 
@@ -297,7 +301,7 @@ def add_to_pending():
     pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
-    received = colored('An application in your name has already been submitted.','yellow')
+    received = colored('An application in your name has already been submitted.', 'yellow')
     contact = colored('Please contact HR for further queries/n', 'yellow')
     if name in pending_names:
         print(received)
