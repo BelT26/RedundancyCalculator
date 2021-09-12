@@ -46,12 +46,12 @@ def show_hr_menu():
             return choice
         elif choice.lower() == 'q':
             logout()
-        print(colored('invalid option\n', 'red'))
+        print(colored('Invalid option\n', 'red'))
 
 
 def next_action():
     """
-    provides the user with the option to exit the programme or return to 
+    provides the user with the option to exit the programme or return to
     the main HR menu
     """
     while True:
@@ -60,7 +60,7 @@ def next_action():
             logout()
         elif next.lower() == 'm':
             break
-        print(colored('Invalid input', 'red\n'))
+        print(colored('Invalid input\n', 'red'))
 
 
 def authorise(data):
@@ -112,21 +112,27 @@ def view_pending():
     first_appl = pending[pend_app_ind]
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
-    print('\nDo you wish to approve this application?')
-    approve = input('Please enter Y or N. Enter Q to quit:\n')
-    if approve.lower() == 'y':
-        authorise(first_appl)
-    elif approve.lower() == 'q':
-        logout()
-    elif approve.lower() == 'n':
-        print('\nDo you wish to reject this application?')
-        reject = input('Please enter Y or N:\n')
-        if reject.lower() == 'y':
-            reject_appl(first_appl)
-        elif reject.lower() == 'n':
-            print(colored('\nApplication not yet processed.', 'blue'))
-            pend_app_ind += 1
-            num_pending -= 1
+    while True:
+        print('\nDo you wish to approve this application?')
+        approve = input('Please enter Y or N. Enter Q to quit:\n')
+        if approve.lower() == 'y':
+            authorise(first_appl)
+            break
+        elif approve.lower() == 'q':
+            logout()
+        elif approve.lower() == 'n':
+            print('\nDo you wish to reject this application?')
+            reject = input('Please enter Y or N:\n')
+            if reject.lower() == 'y':
+                reject_appl(first_appl)
+                break
+            elif reject.lower() == 'n':
+                print(colored('\nApplication not yet processed.', 'blue'))
+                pend_app_ind += 1
+                num_pending -= 1
+                break
+        else:
+            print(colored('Invalid input\n' 'red'))
     if num_pending > 0:
         print('Next application pending approval:\n')
         view_pending()
@@ -205,10 +211,57 @@ def view_rejected():
             print(colored('Invalid input', 'red\n'))
 
 
+def view_details(status):
+    """
+    allows the user to view details of applications that have been rejected or
+    approved. after viewing each application the user is offered the possibility of
+    exiting the programme or returning to the main menu if they do not wish
+    to carry on viewing the applications.
+    """
+    global rejected
+    global approved
+    global appr_ind
+    global rej_ind
+    rej = rejected.get_all_values()
+    appr = approved.get_all_values()
+    if status == 'rejected':
+        headings = rej[0]
+        first_appl = rej[rej_ind]
+    elif status == 'approved':
+        headings == appr[0]
+        first_appl = appr[appr_ind]
+    for head, app in zip(headings, first_appl):
+        print(f'{head}:{app}')
+    while True:
+        view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
+        if view_next.lower() == 'q':
+            logout()
+        elif view_next.lower() == 'n' and status == 'rejected':
+            rej_ind += 1
+            if rej_ind < len(rej):
+                view_details('rejected')
+            else:
+                print('No more rejected applications to view')
+                next_action()
+                break
+        elif view_next.lower() == 'n' and status == 'approved':
+            appr_ind += 1
+            if appr_ind < len(appr):
+                view_details('approved')
+            else:
+                print('No more approved applications to view')
+                next_action()
+                break
+        elif view_next.lower() == 'm':
+            break
+        else:
+            print(colored('Invalid input\n', 'red'))
+
+
 def check_worksheet(status):
     """
     checks the selected worksheet and lets the user know the total
-    number of applications on it. If there are no applications the user is 
+    number of applications on it. If there are no applications the user is
     provided with the option to quit or return to the main menu otherwise
     the appropriate function is called to enable the user to view full
     details of the selected type of applications
@@ -218,12 +271,10 @@ def check_worksheet(status):
     print(f'\n{num_apps} {status} application(s)')
     if num_apps > 0:
         print(f'First {status} application: \n')
-        if status == 'rejected':
-            view_rejected()
-        elif status == 'approved':
-            view_approved()
-        elif status == 'pending':
+        if status == 'pending':
             view_pending()
+        else:
+            view_details(status)
     else:
         print(f'No {status} applications\n')
         next_action()

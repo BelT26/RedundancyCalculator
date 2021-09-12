@@ -23,31 +23,27 @@ approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
 
-def is_integer(input):
-    try:
-        int(input)
-    except ValueError:
-        print('Please enter whole numbers only.')
-    else:
-        return int(input)
-
+def is_integer():
+    while True:
+        num = input('Please enter numbers only\n')      
+        try:
+            int(num)
+        except ValueError:
+            print(colored('Invalid input', 'red'))
+        else:
+            return int(num)
+          
 
 def get_gross_salary():
     """
     asks the user for their salary and checks that a numerical answer is
     provided
     """
-    while True:
-        print('\nPlease input your gross annual salary.')
-        gross_salary = input('Enter numbers only. For example 29000:\n')
-        try:
-            int(gross_salary)
-        except ValueError:
-            print('Please only enter numbers')
-        else:
-            gross_salary = int(gross_salary)
-            return gross_salary
-
+    print('\nPlease input your gross annual salary.')
+    print('For example 29000')
+    gross_salary = is_integer()
+    return gross_salary
+    
 
 def get_length_of_service():
     """
@@ -56,13 +52,8 @@ def get_length_of_service():
     """
     while True:
         print('Please enter the number of years you have worked at MTL.')
-        length_of_service = input('Number of years:\n')
-        try:
-            int(length_of_service)
-        except ValueError:
-            print('Please enter whole numbers only.')
-        else:
-            return int(length_of_service)
+        length_of_service = is_integer()
+        return length_of_service
 
 
 def get_age():
@@ -412,7 +403,7 @@ def view_status():
                 print('Your application has been rejected')
                 exit()
             else:
-                print('No redundancy application has been received')
+                print('Your application has not been received')
                 print('Would you like to submit an application?')
                 apply = input('Please enter Y or N:\n')
                 if apply.lower() == 'y':
