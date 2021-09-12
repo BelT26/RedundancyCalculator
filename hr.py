@@ -22,6 +22,15 @@ approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
 
+def logout():
+    """
+    displays a message to the user that they have been logged out and
+    exits the programme
+    """
+    print(colored('\nYou have successfully logged out.\n', 'yellow'))
+    exit()
+
+
 def show_hr_menu():
     """
     asks the user to choose between three actions and returns the
@@ -36,8 +45,7 @@ def show_hr_menu():
         if choice in ('1', '2', '3'):
             return choice
         elif choice.lower() == 'q':
-            print(colored('\nYou have successfully logged out.\n', 'yellow'))
-            exit()
+            logout()
         print(colored('invalid option\n', 'red'))
 
 
@@ -49,8 +57,7 @@ def next_action():
     while True:
         next = input('Enter Q to quit. M to return to main menu \n')
         if next.lower() == 'q':
-            print(colored('\nYou have successfully logged out.\n', 'yellow'))
-            exit()
+            logout()
         elif next.lower() == 'm':
             break
         print(colored('Invalid input', 'red\n'))
@@ -110,8 +117,7 @@ def view_pending():
     if approve.lower() == 'y':
         authorise(first_appl)
     elif approve.lower() == 'q':
-        print(colored('\nYou have successfully logged out.\n', 'yellow'))
-        exit()
+        logout()
     elif approve.lower() == 'n':
         print('\nDo you wish to reject this application?')
         reject = input('Please enter Y or N:\n')
@@ -149,8 +155,7 @@ def view_approved():
     while True:
         view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
         if view_next.lower() == 'q':
-            print(colored('\nYou have successfully logged out.\n', 'yellow'))
-            exit()
+            logout()
         elif view_next.lower() == 'n':
             appr_ind += 1
             if appr_ind < len(appr):
@@ -164,7 +169,6 @@ def view_approved():
             break
         else:
             print(colored('Invalid input', 'red\n'))
-
 
 
 rej_ind = 1
@@ -187,8 +191,7 @@ def view_rejected():
     while True:
         view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
         if view_next.lower() == 'q':
-            print(colored('\nYou have successfully logged out.\n', 'yellow'))
-            exit()
+            logout()
         elif view_next.lower() == 'n':
             rej_ind += 1
             if rej_ind < len(rej):
@@ -221,7 +224,6 @@ def check_worksheet(status):
             view_approved()
         elif status == 'pending':
             view_pending()
-
     else:
         print(f'No {status} applications\n')
         next_action()
@@ -229,9 +231,10 @@ def check_worksheet(status):
 
 def hr_main():
     """
-    processes the choice returned from show_hr_menu. 
-    once the action has been completed allows the user
-    to select their next action
+    processes the choice returned from show_hr_menu by calling the
+    check_worksheet function and passing in the appropriate argument.
+    once the action has been completed allows the user to select
+    their next action
     """
     while True:
         choice = show_hr_menu()
