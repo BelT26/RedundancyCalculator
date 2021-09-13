@@ -22,8 +22,44 @@ pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
+# variables created to store the name and data of the employee
+# so that they can be accesssed by add_to_peniding function
+name = ''
+staff_data = []
+
+
+# variables used to calculate tax and NI
+tax_free_allowance = 12570
+std_rate_allowance = 37770
+higher_rate_allowance = 99730
+std_tax_perc = 0.2
+higher_tax_perc = 0.4
+highest_tax_perc = 0.45
+
+NI_free_allowance = 9568
+std_NI_perc = 0.12
+low_NI_perc = 0.02
+std_NI_allowance = 40702
+
+# variables used to calculate holidays and set maximum overtime
+min_hol_allowance = 22
+max_hol_allowance = 26
+max_overtime = 75
+
+# defines the number of weeks between the start of the current
+# financial year and the end of the consultation period
+cy_weeks_worked = 9
+
+# sets the number of standard hours worked in a week
+weekly_hours = 37.5
+
 
 def is_integer():
+    """
+    checks that a numberical value is provided.
+    when a number is provided converts it to an
+    integer and returns the converted value
+    """
     while True:
         num = input('Please enter numbers only\n')
         try:
@@ -136,7 +172,8 @@ def get_cf_holidays():
     checks a number is provided
     """
     while True:
-        print('\nPlease enter the number of holidays carried over from July 2021')
+        print('\nPlease enter the number of holidays'
+              ' carried over from July 2021')
         print('Refer to the CF column of your dashboard.')
         cf_holidays = is_integer()
         return cf_holidays
@@ -181,13 +218,19 @@ def calculate_holidays(length_of_service):
     """
     calculates the number of unused holidays that the user should be paid for
     """
-    holiday_entitlement = max((22 + length_of_service), 26)
-    current_year_entitlement = holiday_entitlement * (9 / 52)
+    global min_hol_allowance
+    global max_hol_allowance
+    global cy_weeks_worked
+    holiday_entitlement = max((min_hol_allowance + length_of_service),
+                              max_hol_allowance)
+    current_year_entitlement = holiday_entitlement * (cy_weeks_worked / 52)
     cf_holidays = get_cf_holidays()
     bought_hols = get_bought_holidays()
     hols_taken = get_taken_hols()
     hols_booked = get_booked_hols()
-    rem_holidays = cf_holidays + min((bought_hols - hols_taken - hols_booked), 0) + current_year_entitlement
+    rem_holidays = cf_holidays + \
+        min((bought_hols - hols_taken - hols_booked), 0) \
+        + current_year_entitlement
     print('=' * 54)
     print(f'\nTotal outstanding holidays: {round(rem_holidays, 2)} days\n')
     print('=' * 54)
@@ -207,9 +250,10 @@ def calculate_holiday_pay(num_holidays, salary):
 def get_overtime_hours():
     """
     checks that the user inserts a valid number
-    caps the overtime at 75 hours
+    caps the overtime at the amount in max_overtime
     """
     while True:
+        global max_overtime
         print('\nPlease enter the excess hours showing on your dashboard')
         print('Enter a negative figure if time owed is less than 0')
         excess_hours = input('Please enter only the hours:\n')
@@ -218,8 +262,9 @@ def get_overtime_hours():
         except ValueError:
             print('Please enter whole numbers only')
         else:
-            if int(excess_hours) > 75:
-                print(colored('\nThe maximum amount of overtime payable is 75 hours', 'red'))
+            if int(excess_hours) > max_overtime:
+                print(colored('\nThe maximum amount of overtime payable '
+                              f'is {max_overtime} hours', 'red'))
             else:
                 return int(excess_hours)
 
@@ -239,7 +284,8 @@ def get_overtime_minutes():
             print('Please enter a number')
         else:
             if int(excess_minutes) > 59 or int(excess_minutes) < -59:
-                print(colored('\nThe number of minutes cannot exceed 59', 'red'))
+                print(colored('\nThe number of minutes '
+                              'cannot exceed 59', 'red'))
             elif int(excess_minutes) == 0:
                 return 0
             else:
@@ -253,54 +299,66 @@ def calculate_overtime_payment(salary):
     get_overtime_minutes functions.
     the standard working week is 37.5 hours
     """
+    global max_overtime
+    global weekly_hours
     hours = get_overtime_hours()
-    if hours == 75:
+    if hours == max_overtime:
         minutes = 0
     else:
         minutes = get_overtime_minutes()
     total_time = hours + minutes
-    overtime_payment = salary / (52*37.5) * total_time
+    overtime_payment = salary / (52 * weekly_hours) * total_time
     return overtime_payment
 
 
 def calculate_tax(salary, overtime, pay_in_lieu, holidays):
+    global tax_free_allowance
+    global std_rate_allowance
+    global higher_rate_allowance
+    global std_tax_perc
+    global higher_tax_perc
+    global highest_tax_perc
     standard_rate_tax = 0
     higher_rate_tax = 0
     highest_rate_tax = 0
-    taxable_sum = (salary/12) + overtime + pay_in_lieu + holidays - (12570/12)
+    taxable_sum = (salary/12) + overtime + pay_in_lieu + holidays - \
+        (tax_free_allowance / 12)
     if taxable_sum < 0:
         return 0
-    elif taxable_sum < (37700/12):
-        standard_rate_tax = taxable_sum * 0.2
+    elif taxable_sum < (std_rate_allowance / 12):
+        standard_rate_tax = taxable_sum * std_tax_perc
         return standard_rate_tax
     else:
-        standard_rate_tax = (37700/12) * 0.2
-        if taxable_sum < (137430/12):
-            higher_rate_tax = (taxable_sum - 37700/12) * 0.4
+        standard_rate_tax = (std_rate_allowance/12) * std_tax_perc
+        if taxable_sum < ((higher_rate_allowance + std_rate_allowance)/12):
+            higher_rate_tax = (taxable_sum - std_rate_allowance/12) * \
+                higher_tax_perc
             return standard_rate_tax + higher_rate_tax
         else:
-            higher_rate_tax = (99730/12) * 0.4
-            highest_rate_tax = (taxable_sum - 137430/12) * 0.45
+            higher_rate_tax = (higher_rate_allowance/12) * higher_tax_perc
+            highest_rate_tax = (taxable_sum - (higher_rate_allowance +
+                                std_rate_allowance)) * highest_tax_perc
             return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
 
 def calculate_NI(salary, overtime, pay_in_lieu, holidays):
+    global NI_free_allowance
+    global std_NI_allowance
+    global std_NI_perc
+    global low_NI_perc
     standard_rate_NI = 0
     lower_rate_NI = 0
-    NI_deductable_sum = (salary/12) + overtime + pay_in_lieu + holidays - (9568/12)
+    NI_deductable_sum = (salary/12) + overtime + pay_in_lieu \
+        + holidays - (NI_free_allowance / 12)
     if NI_deductable_sum < 0:
         return 0
-    elif NI_deductable_sum < (40702/12):
-        standard_rate_NI = NI_deductable_sum * 0.12
+    elif NI_deductable_sum < (std_NI_allowance/12):
+        standard_rate_NI = NI_deductable_sum * std_NI_perc
         return standard_rate_NI
     else:
-        standard_rate_NI = (40702/12) * 0.12
-        lower_rate_NI = (NI_deductable_sum - 40702/12) * 0.02
+        standard_rate_NI = (std_NI_allowance/12) * std_NI_perc
+        lower_rate_NI = (NI_deductable_sum - std_NI_allowance/12) * low_NI_perc
         return standard_rate_NI + lower_rate_NI
-        
-
-name = ''
-staff_data = []
 
 
 def add_to_pending():
@@ -316,7 +374,8 @@ def add_to_pending():
     pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
-    received = colored('An application in your name has already been submitted.', 'yellow')
+    received = colored('An application in your name has already '
+                       'been submitted.', 'yellow')
     contact = colored('Please contact HR for further queries/n', 'yellow')
     if name in pending_names:
         print(received)
@@ -339,7 +398,8 @@ def add_to_pending():
         staff_data.insert(1, department)
         pending_sheet.append_row(staff_data)
         print(colored('\nThank you. Application submitted', 'yellow'))
-        print(colored('You will receive a response within 5 working days\n', 'yellow'))
+        print(colored('You will receive a response within '
+                      '5 working days\n', 'yellow'))
 
 
 def validate_payroll_num():
@@ -362,7 +422,6 @@ def validate_payroll_num():
                 payroll = input('\nPlease enter your payroll number:\n')
                 if payroll == pay_nums[name_ind]:
                     print(colored('Access granted\n', 'green'))
-                    add_to_pending()
                     authorised = True
                     break
                 else:
@@ -385,6 +444,7 @@ def check_if_applying():
         apply = input('Please enter Y or N:\n')
         if apply.lower() == 'y':
             validate_payroll_num()
+            add_to_pending()
             break
         elif apply.lower() == 'n':
             print('\nApplication not processed')
@@ -410,9 +470,11 @@ def calculate_redundancy():
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
     NI = round(calculate_NI(gross_salary, overtime, lieu, holiday_pay), 2)
-    vol_red = round(vol_ex + statutory + lieu + holiday_pay + overtime - tax - NI, 2)
+    vol_red = round(vol_ex + statutory + lieu + holiday_pay
+                    + overtime - tax - NI, 2)
     total_gross = round(vol_ex + statutory + lieu + holiday_pay + overtime, 2)
-    print(colored('\nYour redundancy has been calculated:\n', 'white', attrs=['bold']))
+    print(colored('\nYour redundancy has been calculated:\n',
+                  'white', attrs=['bold']))
     print('=' * 54)
     print(f'\nExtra payment for voluntary redundancy: {vol_ex}')
     print(f'Statutory redundancy: {statutory}')
@@ -423,15 +485,19 @@ def calculate_redundancy():
     print(f'Total tax deductable: {tax}')
     print(f'NI contributions: {NI}\n')
     print('=' * 54)
-    print(colored(f'\nYou would receive a net payment of {vol_red} for voluntary redundancy.\n', 'yellow', attrs=['bold']))
+    print(colored(f'\nYou would receive a net payment of {vol_red} '
+                  'for voluntary redundancy.\n', 'yellow', attrs=['bold']))
     global staff_data
-    staff_data.extend((gross_salary, statutory, vol_ex, lieu, holiday_pay, overtime, tax, vol_red))
+    staff_data.extend((gross_salary, statutory, vol_ex, lieu,
+                       holiday_pay, overtime, tax, vol_red))
     check_if_applying()
 
 
 def display_calc_message():
-    text1 = colored('\nPlease ensure you have your payroll number and access to', 'yellow', attrs=['bold'])
-    text2 = colored('your time and attendance dashboard.\n', 'yellow', attrs=['bold'])
+    text1 = colored('\nPlease ensure you have your payroll number and '
+                    'access to', 'yellow', attrs=['bold'])
+    text2 = colored('your time and attendance dashboard.\n',
+                    'yellow', attrs=['bold'])
     print(text1)
     print(text2)
     calculate_redundancy()
@@ -471,12 +537,13 @@ def view_status():
                     print('Please contact HR for further queries\n')
                     exit()
         else:
-            inc_pay = colored('Incorrect payroll number. Access refused', 'red')
+            inc_pay = colored('Incorrect payroll number. Access refused',
+                              'red')
             print(inc_pay)
             exit()
     else:
         print(colored('Invalid name. Access refused', 'red'))
-    
+
 
 def select_staff_option():
     while True:

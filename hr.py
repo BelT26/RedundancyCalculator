@@ -159,7 +159,8 @@ def view_approved():
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
     while True:
-        view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
+        view_next = input('\nPress N to view next, Q to quit, '
+                          'M for main menu.\n')
         if view_next.lower() == 'q':
             logout()
         elif view_next.lower() == 'n':
@@ -195,7 +196,8 @@ def view_rejected():
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
     while True:
-        view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
+        view_next = input('\nPress N to view next. Q to quit. '
+                          'M for main menu\n')
         if view_next.lower() == 'q':
             logout()
         elif view_next.lower() == 'n':
@@ -214,9 +216,9 @@ def view_rejected():
 def view_details(status):
     """
     allows the user to view details of applications that have been rejected or
-    approved. after viewing each application the user is offered the possibility of
-    exiting the programme or returning to the main menu if they do not wish
-    to carry on viewing the applications.
+    approved. after viewing each application the user is offered the
+    possibility of exiting the programme or returning to the main menu if they
+    do not wish to carry on viewing the applications.
     """
     global rejected
     global approved
@@ -233,7 +235,8 @@ def view_details(status):
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
     while True:
-        view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
+        view_next = input('\nPress N to view next. Q to quit. '
+                          'M for main menu\n')
         if view_next.lower() == 'q':
             logout()
         elif view_next.lower() == 'n' and status == 'rejected':
