@@ -321,7 +321,7 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
     standard_rate_tax = 0
     higher_rate_tax = 0
     highest_rate_tax = 0
-    taxable_sum = (salary/12) + overtime + pay_in_lieu + holidays - \
+    taxable_sum = (salary / 12) + overtime + pay_in_lieu + holidays - \
         (tax_free_allowance / 12)
     if taxable_sum < 0:
         return 0
@@ -329,13 +329,13 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
         standard_rate_tax = taxable_sum * std_tax_perc
         return standard_rate_tax
     else:
-        standard_rate_tax = (std_rate_allowance/12) * std_tax_perc
-        if taxable_sum < ((higher_rate_allowance + std_rate_allowance)/12):
-            higher_rate_tax = (taxable_sum - std_rate_allowance/12) * \
+        standard_rate_tax = (std_rate_allowance / 12) * std_tax_perc
+        if taxable_sum < ((higher_rate_allowance + std_rate_allowance) / 12):
+            higher_rate_tax = (taxable_sum - std_rate_allowance / 12) * \
                 higher_tax_perc
             return standard_rate_tax + higher_rate_tax
         else:
-            higher_rate_tax = (higher_rate_allowance/12) * higher_tax_perc
+            higher_rate_tax = (higher_rate_allowance / 12) * higher_tax_perc
             highest_rate_tax = (taxable_sum - (higher_rate_allowance +
                                 std_rate_allowance)) * highest_tax_perc
             return standard_rate_tax + higher_rate_tax + highest_rate_tax
@@ -494,9 +494,10 @@ def calculate_redundancy():
 
 
 def display_calc_message():
-    text1 = colored('\nPlease ensure you have your payroll number and '
-                    'access to', 'yellow', attrs=['bold'])
-    text2 = colored('your time and attendance dashboard.\n',
+    text1 = colored('\nPlease ensure you have access to your '
+                    'time and attendance dashboard', 'yellow', attrs=['bold'])
+    text2 = colored('You will also require your payroll number if you decide '
+                    'to submit an application.\n',
                     'yellow', attrs=['bold'])
     print(text1)
     print(text2)
