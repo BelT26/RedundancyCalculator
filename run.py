@@ -55,13 +55,13 @@ def check_password():
     """
     attempts = 3
     while attempts > 0:
-        password = input('Please enter your password:\n')
+        password = input('\nPlease enter your password:\n')
         if password == '#MTL':
-            print('correct password')
+            print(colored('\nCorrect password', 'green'))
             return True
         else:
             attempts -= 1
-            print('incorrect password')
+            print(colored('\nIncorrect password', 'red'))
     print('Password attempts exhausted')
     return False
 

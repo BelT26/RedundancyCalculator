@@ -55,7 +55,7 @@ def next_action():
     the main HR menu
     """
     while True:
-        next = input('Enter Q to quit. M to return to main menu \n')
+        next = input('Enter Q to quit programme. M to return to main menu \n')
         if next.lower() == 'q':
             logout()
         elif next.lower() == 'm':
@@ -63,7 +63,7 @@ def next_action():
         print(colored('Invalid input\n', 'red'))
 
 
-def authorise(data):
+def authorise(data, ind):
     """
     deletes an application from the applications worksheet and adds it to the
     approved worksheet
@@ -71,11 +71,12 @@ def authorise(data):
     global approved
     global pending_sheet
     approved.append_row(data)
-    pending_sheet.delete_rows(2)
-    print(colored('\nApplication authorised.\n', 'blue'))
+    ind += 1
+    pending_sheet.delete_rows(ind)
+    print(colored('\nApplication authorised.\n', 'cyan'))
 
 
-def reject_appl(data):
+def reject_appl(data, ind):
     """
     deletes an application from the applications worksheet and adds it to the
     rejected worksheet
@@ -83,12 +84,13 @@ def reject_appl(data):
     global rejected
     global pending_sheet
     rejected.append_row(data)
-    pending_sheet.delete_rows(2)
-    print(colored('\nApplication rejected.', 'blue'))
+    ind += 1
+    pending_sheet.delete_rows(ind)
+    print(colored('\nApplication rejected.\n', 'cyan'))
 
 
 # variables used in the view pending and check pending functions
-pend_app_ind = 1
+viewed_app_ind = 1
 pending = pending_sheet.get_all_values()
 num_pending = len(pending)-1
 
@@ -106,34 +108,37 @@ def view_pending():
     """
     global pending_sheet
     global pending
-    global pend_app_ind
+    global viewed_app_ind
     global num_pending
     headings = pending[0]
-    first_appl = pending[pend_app_ind]
-    for head, app in zip(headings, first_appl):
+    appl_viewed = pending[viewed_app_ind]
+    for head, app in zip(headings, appl_viewed):
         print(f'{head}:{app}')
     while True:
-        print('\nDo you wish to approve this application?')
-        approve = input('Please enter Y or N. Enter Q to quit:\n')
-        if approve.lower() == 'y':
-            authorise(first_appl)
+        print('\nDo you wish to approve or reject this application?')
+        print('Please enter A to approve, R to reject, N to view next')
+        approve = input('or M to return to the main menu:\n')
+        if approve.lower() == 'a':
+            authorise(appl_viewed, viewed_app_ind)
+            pending = pending_sheet.get_all_values()
+            num_pending = len(pending)-1
             break
-        elif approve.lower() == 'q':
-            logout()
+        elif approve.lower() == 'r':
+            reject_appl(appl_viewed, viewed_app_ind)
+            pending = pending_sheet.get_all_values()
+            num_pending = len(pending)-1
+            break
+        elif approve.lower() == 'm':
+            show_hr_menu()
+            break
         elif approve.lower() == 'n':
-            print('\nDo you wish to reject this application?')
-            reject = input('Please enter Y or N:\n')
-            if reject.lower() == 'y':
-                reject_appl(first_appl)
-                break
-            elif reject.lower() == 'n':
-                print(colored('\nApplication not yet processed.', 'blue'))
-                pend_app_ind += 1
-                num_pending -= 1
-                break
+            print(colored('\nApplication not yet processed.\n', 'cyan'))
+            viewed_app_ind += 1
+            num_pending -= 1
+            break
         else:
             print(colored('Invalid input\n' 'red'))
-    if num_pending > 0:
+    if num_pending > 1:
         print('Next application pending approval:\n')
         view_pending()
     else:
