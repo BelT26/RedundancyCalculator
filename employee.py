@@ -297,7 +297,6 @@ def calculate_overtime_payment(salary):
     calculates the overtime payment due based on the validated number
     of hours and minutes returned by get_overtime_hours and
     get_overtime_minutes functions.
-    the standard working week is 37.5 hours
     """
     global max_overtime
     global weekly_hours
@@ -312,6 +311,12 @@ def calculate_overtime_payment(salary):
 
 
 def calculate_tax(salary, overtime, pay_in_lieu, holidays):
+    """
+    accepts as arguments the elements of the payout due that would be subject
+    to tax deductions. Uses the current government threshholds declared in
+    the global variables to calculate the amount of tax due in each of the tax
+    bands.  Returns the total amount of tax that will be deducted.
+    """
     global tax_free_allowance
     global std_rate_allowance
     global higher_rate_allowance
@@ -342,6 +347,12 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
 
 
 def calculate_NI(salary, overtime, pay_in_lieu, holidays):
+    """
+    accepts as arguments the elements of the payout due that would be subject
+    to NI deductions. Uses the current government threshholds declared in the
+    global variables to calculate the amount of NI due in each of the tax
+    bands.  Returns the total amount of NI that will be deducted.
+    """
     global NI_free_allowance
     global std_NI_allowance
     global std_NI_perc
@@ -439,6 +450,14 @@ def validate_payroll_num():
 
 
 def check_if_applying():
+    """
+    checks if the user would like to proceed with their application after
+    receiving their calculation. If they enter 'y', their name and payroll
+    number are checked and if the information provided is correct the
+    application is added to the google pending worksheet.  If they enter
+    'n' the data is not stored, the user is informed of this and the user
+    exits the programme
+    """
     print('Do you wish to proceed with your application?')
     while True:
         apply = input('Please enter Y or N:\n')
@@ -455,6 +474,15 @@ def check_if_applying():
 
 
 def calculate_redundancy():
+    """
+    retrieves the necessary information from the user to perform the
+    redundancy calculation. Calls the functions that calculate the
+    individual elements and stores the amounts in variables.
+    Uses these variables to calculate the total net redundancy due.
+    Provides a detailed breakdown to the user.
+    Pushes the details to the empty staff_data array and calls
+    the function to check whether the user would like to proceed
+    """
     los = get_length_of_service()
     if los < 2:
         print('You must have completed at least 2 years for redundancy.\n')
@@ -494,6 +522,10 @@ def calculate_redundancy():
 
 
 def display_calc_message():
+    """
+    prints a highlighted message to the user to ensure that they have the
+    necessary information to hand before they start their calculation
+    """
     text1 = colored('\nPlease ensure you have access to your '
                     'time and attendance dashboard', 'yellow', attrs=['bold'])
     text2 = colored('You will also require your payroll number if you decide '
@@ -505,6 +537,16 @@ def display_calc_message():
 
 
 def view_status():
+    """
+    asks the employee for their name and payroll number
+    and checks that they correspond to the detail stored
+    on the 'staff' google worksheet. Checks the 'pending',
+    'approved' and 'rejected' sheets for corresponding data.
+    informs the user of the status if the data is found
+    otherwise informs the user that no application has been
+    received and gives them the option to calculate and
+    submit their redundancy now
+    """
     global name
     name = input('Please enter your full name:\n')
     name = name.upper()
@@ -547,6 +589,10 @@ def view_status():
 
 
 def select_staff_option():
+    """
+    displays the options available under employee access.
+    asks the user to select an action and validates the input
+    """
     while True:
         print('\nPlease select from the following options')
         print('1. Calculate redundancy')
