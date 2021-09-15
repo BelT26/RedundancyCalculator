@@ -21,6 +21,16 @@ pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
+# variables used in the view_pending and check_pending functions
+viewed_app_ind = 1
+pending = pending_sheet.get_all_values()
+num_pending = len(pending)-1
+
+# variables used to keep track of application being viewed in
+# view_details function
+rej_ind = 1
+appr_ind = 1
+
 
 def logout():
     """
@@ -98,12 +108,6 @@ def reject_appl(data, ind):
     print(colored('\nApplication rejected.\n', 'cyan', attrs=['bold']))
 
 
-# variables used in the view pending and check pending functions
-viewed_app_ind = 1
-pending = pending_sheet.get_all_values()
-num_pending = len(pending)-1
-
-
 def view_pending():
     """
     allows the user to view each application that is yet to be approved
@@ -154,78 +158,6 @@ def view_pending():
     else:
         print('No more pending applications')
         next_action()
-
-
-appr_ind = 1
-
-
-def view_approved():
-    """
-    allows the user to view details of applications that have been approved.
-    after viewing each application the user is offered the possibility of
-    exiting the application or returning to the main menu if they do not wish
-    to carry on viewing the applications.
-    """
-    global approved
-    global appr_ind
-    appr = approved.get_all_values()
-    headings = appr[0]
-    first_appl = appr[appr_ind]
-    for head, app in zip(headings, first_appl):
-        print(f'{head}:{app}')
-    while True:
-        view_next = input('\nPress N to view next, Q to quit, '
-                          'M for main menu.\n')
-        if view_next.lower() == 'q':
-            logout()
-        elif view_next.lower() == 'n':
-            appr_ind += 1
-            if appr_ind < len(appr):
-                print('Next approved application: \n')
-                view_approved()
-            else:
-                print('No more approved applications to view \n')
-                next_action()
-                break
-        elif view_next.lower() == 'm':
-            break
-        else:
-            is_invalid()
-
-
-rej_ind = 1
-
-
-def view_rejected():
-    """
-    allows the user to view details of applications that have been rejected.
-    after viewing each application the user is offered the possibility of
-    exiting the application or returning to the main menu if they do not wish
-    to carry on viewing the applications.
-    """
-    global rejected
-    global rej_ind
-    rej = rejected.get_all_values()
-    headings = rej[0]
-    first_appl = rej[rej_ind]
-    for head, app in zip(headings, first_appl):
-        print(f'{head}:{app}')
-    while True:
-        view_next = input('\nPress N to view next. Q to quit. '
-                          'M for main menu\n')
-        if view_next.lower() == 'q':
-            logout()
-        elif view_next.lower() == 'n':
-            rej_ind += 1
-            if rej_ind < len(rej):
-                view_rejected()
-            else:
-                print('No more rejected applications to view')
-                next_action()
-        elif view_next.lower() == 'm':
-            break
-        else:
-            is_invalid()
 
 
 def view_details(status):
