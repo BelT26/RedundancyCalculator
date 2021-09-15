@@ -1,20 +1,6 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
-
-Welcome BelT26,
-
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **August 17, 2021**
-
-## Reminders
-
-* Your code must be placed in the `run.py` file
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
-
-
-
-
-
 # Redundancy Calculator
+
+https://mtl-redundancy-calculator.herokuapp.com/
 
 ## Table of Contents
 * Motivation
@@ -26,7 +12,6 @@ This is the Code Institute student template for deploying your third portfolio p
 * View applications
 * Approve applications
 * Reject applications
-* Reverse decisions
 * Bugs and challenges
 * Deployment
 * Credits
@@ -44,7 +29,7 @@ During the previous redundancy waves staff reported the following concerns about
 To combat these issues I created a redundancy calculator that would allow staff to immediately access their potential voluntary redundancy payout in an anonymous way.
 
 
-## STRUCTURE
+## Structure
 As the original file I was working on was becoming very lengthy, to improve the readability of the code I created two more files: employee.py and hr.py so that I could group the functions relevant to the access level selected.  These functions were then imported into the run.py file. 
 
 Google sheets are used to store and manipulate data throughout the programme. I followed the Code Institute Love Sandwiches project and used the code there as a guide for how to set up my working environment and add my credentials.
@@ -52,16 +37,16 @@ Google sheets are used to store and manipulate data throughout the programme. I 
 I also imported the termcolor module at the start of the file to improve the appearance of the programme in the terminal and highlight important information.  The following tutorial was used as a guide ![termcolor tutorial](https://towardsdatascience.com/prettify-your-terminal-text-with-termcolor-and-pyfiglet-880de83fda6b)
 
 
-## RUN.PY
+## Run.py
 This file displays a welcome message and asks the user to select an access level. If they require access to the
 HR functions they must provide the correct password within 3 attempts or they will be logged out.
 The main function at the base of the file then calls either the option menu imported from employee.py or hr.py
 
 
-## EMPLOYEE.PY
+## Employee.py
 There functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
 
-### CALCULATE REDUNDANCY
+### Reduncancy calculation
 No user details are requested to access the calculator.  This was deliberate as some employees expressed a wish to be able to calculate their redundancy payout without a record being kept.
 
 Before the calculation process begins a highlighted message informs the user that they will need access to the details on their time and attendance record.  This was emphasised to prevent the user from becoming frustrated part way through the calculation when they realised that they did not have the correct data to hand.
@@ -70,9 +55,27 @@ The figures used are specific to how the company I work at is calculating redund
 
 As the functions used to retrieve information from the user in this section require a numerical input, I created an 'is_integer' function that tries to convert the user input to an integer and return it and raises a ValueError if the input is not a number.  This function is then called by all subsequent functions that ask the user to provide a number.  
 
+The initial output to the terminal was not particularly readable.  For a better visual experience for the user I aligned the figures using the ljust() method.  I found that this tutorial was very helpful ![W3 Schools ljust() tutorial](https://www.w3schools.com/python/ref_string_ljust.asp)
+
+After the calculation is displayed the user is then offered the option of submitting an application. If they decide not to proceed no data is stored and they exit the programme.
+
+### Application Submission
+It is only possible to submit an application directly after receiving a calculation.  This is deliberate to prevent the user from entering inaccurate calculations.
+
+If the user decides to proceed with their application they are asked to enter their name and their payroll number. These are then checked against the staff details on the staff worksheet of the Google API. If correct details are provided a check is then carried out to see if an application has already been submitted. If it has the user is advised that an application has been made and informed of the status otherwise the user's details are submitted to the pending sheet of the API.
+
+### View status
 
 
-## DEPLOYMENT
+
+## HR.py
+
+
+## Bugs
+The majority of problems I encountered where with the view_pending function within hr.py Although the google sheets API was updating correctly and moving the application from the pending worksheet to the rejected or approved worksheet the terminal kept redisplaying the same application.  I eventually worked out that I needed to reset the pending and num_pending variables immediately after calling the authorise or reject_appl functions
+
+
+## Deployment
 I set up an account with heroku.
 
 On the heroku site I added the following two buildpacks from the _Settings_ tab
@@ -82,3 +85,10 @@ On the heroku site I added the following two buildpacks from the _Settings_ tab
 I created a _Config Var_ called `PORT` and set it to `8000`. For my credentials I then created another _Config Var_ called `CREDS` and pasted the JSON into the value field.
 
 The project was then deployed through my Github repository.
+
+
+## Future Development Possibilities
+With more time I would explore the option of adding the following features
+* Add the possibility for HR to reverse decisions made when approving or rejecting applications
+* Rather than display each application in chronological order when HR view them, for larger companies a list of the applications on the selected sheet and they could choose which one to view.
+* In a real world scenario the information the user enters for their salary / holidays etc would be validated against an employee database holding these details if they decided to submit an application

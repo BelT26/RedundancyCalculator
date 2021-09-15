@@ -126,7 +126,7 @@ def view_pending():
     headings = pending[0]
     appl_viewed = pending[viewed_app_ind]
     for head, app in zip(headings, appl_viewed):
-        print(f'{head}:{app}')
+        print(f'{head.ljust(15, ' ')}:{app}')
     while True:
         print('\nDo you wish to approve or reject this application?')
         print('Please enter A to approve, R to reject, N to view next')
