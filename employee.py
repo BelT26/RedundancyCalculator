@@ -164,9 +164,9 @@ def calculate_statutory(age, years_service, weekly_pay):
             std_rate_yrs = statutory_years - high_rate_yrs
         else:
             std_rate_yrs = min(41 - 22, statutory_years - low_rate_yrs)
-    # print(f'lower rate years: {low_rate_yrs}')
-    # print(f'standard years: {std_rate_yrs}')
-    # print(f'higher rate years: {high_rate_yrs}')
+    print(f'lower rate years: {low_rate_yrs}')
+    print(f'standard years: {std_rate_yrs}')
+    print(f'higher rate years: {high_rate_yrs}')
     years = (low_rate_yrs * 0.5) + std_rate_yrs + (high_rate_yrs * 1.5)
     stat_pay = weekly_stat * years
     return stat_pay
@@ -531,16 +531,24 @@ def calculate_redundancy():
     print(colored('\nYour redundancy has been calculated:\n',
                   'white', attrs=['bold']))
     print('=' * 54)
-    print(f'\nExtra payment for voluntary redundancy: {vol_ex}')
-    print(f'Statutory redundancy: {statutory}')
-    print(f'Pay in lieu of notice: {lieu}')
-    print(f'Unused holidays: {holiday_pay}')
-    print(f'Overtime: {overtime}')
-    print(f'Gross: {total_gross}')
-    print(f'Total tax deductable: {tax}')
-    print(f'NI contributions: {NI}\n')
+    vol_str = 'Voluntary extra:'.ljust(25, ' ')
+    stat_str = 'Statutory redundancy:'.ljust(25, ' ')
+    lieu_str = 'Pay in lieu of notice:'.ljust(25, ' ')
+    hol_str = 'Unused holidays:'.ljust(25, ' ')
+    over_str = 'Overtime:'.ljust(25, ' ')
+    gross_str = 'Gross'.ljust(25, ' ')
+    tax_str = 'Total tax deductable:'.ljust(25, ' ')
+    NI_str ='NI contributions:'.ljust(25, ' ')
+    print(f'\n{vol_str}£ {vol_ex}')
+    print(f'{stat_str}£ {statutory}')
+    print(f'{lieu_str}£ {lieu}')
+    print(f'{hol_str}£ {holiday_pay}')
+    print(f'{over_str}£ {overtime}')
+    print(f'{gross_str}£ {total_gross}')
+    print(f'{tax_str}£ {tax}')
+    print(f'{NI_str}£ {NI}\n')
     print('=' * 54)
-    print(colored(f'\nYou would receive a net payment of {vol_red} '
+    print(colored(f'\nYou would receive a net payment of £ {vol_red} '
                   'for voluntary redundancy.\n', 'yellow', attrs=['bold']))
     global staff_data
     staff_data.extend((gross_salary, statutory, vol_ex, lieu,
