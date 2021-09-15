@@ -60,9 +60,19 @@ def staff_logout():
     displays a message to the user that they have been logged out and
     exits the programme
     """
-    print(colored('\nYou have successfully logged out.', 'yellow'))
-    print(colored('Please contact HR for any further queries.\n', 'yellow'))
+    print(colored('\nYou have successfully logged out.', 'yellow',
+                  attrs=['bold']))
+    print(colored('Please contact HR for any further queries.\n',
+                  'yellow', attrs=['bold']))
     exit()
+
+
+def is_invalid():
+    """
+    Prints a statement in bold red type to inform the user that the information
+    provided is not valid
+    """
+    print(colored('Invalid input\n', 'red', attrs=['bold']))
 
 
 def is_integer():
@@ -76,7 +86,7 @@ def is_integer():
         try:
             int(num)
         except ValueError:
-            print(colored('Invalid input', 'red'))
+            is_invalid()
         else:
             return int(num)
 
@@ -275,7 +285,8 @@ def get_overtime_hours():
         else:
             if int(excess_hours) > max_overtime:
                 print(colored('\nThe maximum amount of overtime payable '
-                              f'is {max_overtime} hours', 'red'))
+                              f'is {max_overtime} hours', 'red',
+                              attrs=['bold']))
             else:
                 return int(excess_hours)
 
@@ -397,8 +408,9 @@ def add_to_pending():
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
     received = colored('An application in your name has already '
-                       'been submitted.', 'yellow')
-    contact = colored('Please contact HR for further queries/n', 'yellow')
+                       'been submitted.', 'yellow', attrs=['bold'])
+    contact = colored('Please contact HR for further queries/n', 'yellow',
+                      attrs=['bold'])
     if name in pending_names:
         print(received)
         print('It is currently under review')
@@ -419,9 +431,10 @@ def add_to_pending():
         staff_data.insert(0, name)
         staff_data.insert(1, department)
         pending_sheet.append_row(staff_data)
-        print(colored('\nThank you. Application submitted', 'yellow'))
+        print(colored('\nThank you. Application submitted', 'yellow',
+                      attrs=['bold']))
         print(colored('You will receive a response within '
-                      '5 working days\n', 'yellow'))
+                      '5 working days\n', 'yellow', attrs=['bold']))
 
 
 def validate_payroll_num():
@@ -448,15 +461,18 @@ def validate_payroll_num():
                     break
                 else:
                     payroll_attempts -= 1
-                    print(colored('\nIncorrect payroll number.', 'red'))
+                    print(colored('\nIncorrect payroll number.', 'red',
+                                  attrs=['bold']))
             if payroll_attempts == 0:
-                print(colored('Attempts exhausted. Access refused\n', 'red'))
+                print(colored('Attempts exhausted. Access refused\n', 'red',
+                              attrs=['bold']))
                 exit()
         else:
             name_attempts -= 1
-            print(colored('Invalid name', 'red'))
+            is_invalid()
     if name_attempts == 0:
-        print(colored('Attempts exhausted. Access refused\n', 'red'))
+        print(colored('Attempts exhausted. Access refused\n', 'red',
+                      attrs=['bold']))
         exit()
 
 
@@ -481,7 +497,7 @@ def check_if_applying():
             print('The information provided has not been stored.\n')
             exit()
         else:
-            print(colored('Invalid input', 'red'))
+            is_invalid()
 
 
 def calculate_redundancy():
@@ -546,40 +562,6 @@ def display_calc_message():
     print(text2)
     calculate_redundancy()
 
-def validate_payroll_num():
-    """
-    checks the staff worksheet to ensure that the name and payroll
-    number entered match the details stored
-    """
-    global name
-    staff = SHEET.worksheet('staff').col_values(1)
-    pay_nums = SHEET.worksheet('staff').col_values(2)
-    name_attempts = 3
-    authorised = False
-    while name_attempts > 0 and authorised is False:
-        name = input('\nPlease enter your full name:\n')
-        name = name.upper()
-        if name in staff:
-            name_ind = staff.index(name)
-            payroll_attempts = 3
-            while payroll_attempts > 0:
-                payroll = input('\nPlease enter your payroll number:\n')
-                if payroll == pay_nums[name_ind]:
-                    print(colored('Access granted\n', 'green'))
-                    authorised = True
-                    break
-                else:
-                    payroll_attempts -= 1
-                    print(colored('\nIncorrect payroll number.', 'red'))
-            if payroll_attempts == 0:
-                print(colored('Attempts exhausted. Access refused\n', 'red'))
-                exit()
-        else:
-            name_attempts -= 1
-            print(colored('Invalid name', 'red'))
-    if name_attempts == 0:
-        print(colored('Attempts exhausted. Access refused\n', 'red'))
-        exit()
 
 def view_status():
     """
@@ -603,11 +585,14 @@ def view_status():
         print('\nYour application has been approved\n')
         exit()
     elif name in rejected_names:
-        print(colored('Unfortunately your application has been rejected', 'cyan'))
-        print(colored('Please speak to HR for further information', 'cyan'))
+        print(colored('Unfortunately your application has been rejected',
+                      'cyan', attrs=['bold']))
+        print(colored('Please speak to HR for further information\n', 'cyan',
+                      attrs=['bold']))
         exit()
     else:
-        print(colored('Your application has not been received', 'cyan'))
+        print(colored('Your application has not been received', 'cyan',
+                      attrs=['bold']))
         print('\nWould you like to submit an application?')
         apply = input('Please enter Y to calculate your reduncancy'
                       'or any other key to exit:\n')
@@ -639,4 +624,4 @@ def select_staff_option():
             staff_logout()
             exit()
         else:
-            print(colored('Invalid input', 'red'))
+            is_invalid()

@@ -27,8 +27,17 @@ def logout():
     displays a message to the user that they have been logged out and
     exits the programme
     """
-    print(colored('\nYou have successfully logged out.\n', 'yellow'))
+    print(colored('\nYou have successfully logged out.\n', 'yellow',
+                  attrs=['bold']))
     exit()
+
+
+def is_invalid():
+    """
+    Prints a statement in bold red type to inform the user that the information
+    provided is not valid
+    """
+    print(colored('Invalid input\n', 'red', attrs=['bold']))
 
 
 def show_hr_menu():
@@ -46,7 +55,7 @@ def show_hr_menu():
             return choice
         elif choice.lower() == 'q':
             logout()
-        print(colored('Invalid option\n', 'red'))
+        is_invalid()
 
 
 def next_action():
@@ -60,7 +69,7 @@ def next_action():
             logout()
         elif next.lower() == 'm':
             break
-        print(colored('Invalid input\n', 'red'))
+        is_invalid()
 
 
 def authorise(data, ind):
@@ -73,7 +82,7 @@ def authorise(data, ind):
     approved.append_row(data)
     ind += 1
     pending_sheet.delete_rows(ind)
-    print(colored('\nApplication authorised.\n', 'cyan'))
+    print(colored('\nApplication authorised.\n', 'cyan', attrs=['bold']))
 
 
 def reject_appl(data, ind):
@@ -86,7 +95,7 @@ def reject_appl(data, ind):
     rejected.append_row(data)
     ind += 1
     pending_sheet.delete_rows(ind)
-    print(colored('\nApplication rejected.\n', 'cyan'))
+    print(colored('\nApplication rejected.\n', 'cyan', attrs=['bold']))
 
 
 # variables used in the view pending and check pending functions
@@ -132,12 +141,13 @@ def view_pending():
             show_hr_menu()
             break
         elif approve.lower() == 'n':
-            print(colored('\nApplication not yet processed.\n', 'cyan'))
+            print(colored('\nApplication not yet processed.\n', 'cyan',
+                          attrs=['bold']))
             viewed_app_ind += 1
             num_pending -= 1
             break
         else:
-            print(colored('Invalid input\n' 'red'))
+            is_invalid()
     if num_pending > 1:
         print('Next application pending approval:\n')
         view_pending()
@@ -180,7 +190,7 @@ def view_approved():
         elif view_next.lower() == 'm':
             break
         else:
-            print(colored('Invalid input', 'red\n'))
+            is_invalid()
 
 
 rej_ind = 1
@@ -215,7 +225,7 @@ def view_rejected():
         elif view_next.lower() == 'm':
             break
         else:
-            print(colored('Invalid input', 'red\n'))
+            is_invalid()
 
 
 def view_details(status):
@@ -263,7 +273,7 @@ def view_details(status):
         elif view_next.lower() == 'm':
             break
         else:
-            print(colored('Invalid input\n', 'red'))
+            is_invalid()
 
 
 def check_worksheet(status):
