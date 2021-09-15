@@ -18,6 +18,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 
 
+# variables used to access google worksheets
 pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
@@ -52,6 +53,16 @@ cy_weeks_worked = 9
 
 # sets the number of standard hours worked in a week
 weekly_hours = 37.5
+
+
+def staff_logout():
+    """
+    displays a message to the user that they have been logged out and
+    exits the programme
+    """
+    print(colored('\nYou have successfully logged out.', 'yellow'))
+    print(colored('Please contact HR for any further queries.\n', 'yellow'))
+    exit()
 
 
 def is_integer():
@@ -535,6 +546,40 @@ def display_calc_message():
     print(text2)
     calculate_redundancy()
 
+def validate_payroll_num():
+    """
+    checks the staff worksheet to ensure that the name and payroll
+    number entered match the details stored
+    """
+    global name
+    staff = SHEET.worksheet('staff').col_values(1)
+    pay_nums = SHEET.worksheet('staff').col_values(2)
+    name_attempts = 3
+    authorised = False
+    while name_attempts > 0 and authorised is False:
+        name = input('\nPlease enter your full name:\n')
+        name = name.upper()
+        if name in staff:
+            name_ind = staff.index(name)
+            payroll_attempts = 3
+            while payroll_attempts > 0:
+                payroll = input('\nPlease enter your payroll number:\n')
+                if payroll == pay_nums[name_ind]:
+                    print(colored('Access granted\n', 'green'))
+                    authorised = True
+                    break
+                else:
+                    payroll_attempts -= 1
+                    print(colored('\nIncorrect payroll number.', 'red'))
+            if payroll_attempts == 0:
+                print(colored('Attempts exhausted. Access refused\n', 'red'))
+                exit()
+        else:
+            name_attempts -= 1
+            print(colored('Invalid name', 'red'))
+    if name_attempts == 0:
+        print(colored('Attempts exhausted. Access refused\n', 'red'))
+        exit()
 
 def view_status():
     """
@@ -547,45 +592,30 @@ def view_status():
     received and gives them the option to calculate and
     submit their redundancy now
     """
-    global name
-    name = input('Please enter your full name:\n')
-    name = name.upper()
-    staff = SHEET.worksheet('staff').col_values(1)
     pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
-    pay_nums = SHEET.worksheet('staff').col_values(2)
-    if name in staff:
-        name_ind = staff.index(name)
-        payroll = input('Please enter your payroll number:\n')
-        if payroll == pay_nums[name_ind]:
-            access = colored('Access granted', 'green')
-            print(access)
-            if name in pending_names:
-                print('\nYour application is currently under review.\n')
-                exit()
-            elif name in approved_names:
-                print('\nYour application has been approved\n')
-                exit()
-            elif name in rejected_names:
-                print('\nYour application has been rejected\n')
-                exit()
-            else:
-                print('\nYour application has not been received')
-                print('Would you like to submit an application?')
-                apply = input('Please enter Y or N:\n')
-                if apply.lower() == 'y':
-                    calculate_redundancy()
-                else:
-                    print('Please contact HR for further queries\n')
-                    exit()
-        else:
-            inc_pay = colored('Incorrect payroll number. Access refused',
-                              'red')
-            print(inc_pay)
-            exit()
+    validate_payroll_num()
+    if name in pending_names:
+        print('\nYour application is currently under review.\n')
+        exit()
+    elif name in approved_names:
+        print('\nYour application has been approved\n')
+        exit()
+    elif name in rejected_names:
+        print(colored('Unfortunately your application has been rejected', 'cyan'))
+        print(colored('Please speak to HR for further information', 'cyan'))
+        exit()
     else:
-        print(colored('Invalid name. Access refused', 'red'))
+        print(colored('Your application has not been received', 'cyan'))
+        print('\nWould you like to submit an application?')
+        apply = input('Please enter Y to calculate your reduncancy'
+                      'or any other key to exit:\n')
+        if apply.lower() == 'y':
+            calculate_redundancy()
+        else:
+            staff_logout()
+            exit()
 
 
 def select_staff_option():
@@ -606,7 +636,7 @@ def select_staff_option():
             view_status()
             break
         elif staff_choice.lower() == 'q':
-            print(colored('\nYou have successfully logged out\n', 'yellow'))
+            staff_logout()
             exit()
         else:
-            print('You must select from the available options')
+            print(colored('Invalid input', 'red'))
