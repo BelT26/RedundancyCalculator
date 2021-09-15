@@ -46,6 +46,8 @@ std_NI_allowance = 40702
 min_hol_allowance = 22
 max_hol_allowance = 26
 max_overtime = 75
+min_weeks_lieu = 4
+max_weeks_lieu = 12
 
 # defines the number of weeks between the start of the current
 # financial year and the end of the consultation period
@@ -174,15 +176,18 @@ def calculate_statutory(age, years_service, weekly_pay):
 
 def calculate_pay_in_lieu(salary, years_service):
     """
-    returns the amount of pay the user would receive in lieu of notice
-    if the years worked are 5 or more, returns 1 week's pay per year
-    if the years worked are less than 5 defaults to 4 week's pay
-    total notice period payable is capped at 12 weeks.
+    the default pay in lieu is set to the salary divided by 52 and
+    multiplied by the amount set in min_weeks_in lieu.
+    if the years worked exceed the min_weeks_in lieu returns the
+    salary divided by 52 and multiplied by the years worked up
+    to the cap provided in max_weeks_in_lieu
     """
-    weeks_notice = 4
-    if years_service >= 12:
-        weeks_notice = 12
-    elif years_service > 4 and years_service < 12:
+    global min_weeks_lieu
+    global max_weeks_lieu
+    weeks_notice = min_weeks_lieu
+    if years_service >= max_weeks_lieu:
+        weeks_notice = max_weeks_lieu
+    elif years_service > min_weeks_lieu and years_service < max_weeks_lieu:
         weeks_notice = years_service
     return round((salary / 52) * weeks_notice, 2)
 
@@ -538,7 +543,7 @@ def calculate_redundancy():
     over_str = 'Overtime:'.ljust(25, ' ')
     gross_str = 'Gross'.ljust(25, ' ')
     tax_str = 'Total tax deductable:'.ljust(25, ' ')
-    NI_str ='NI contributions:'.ljust(25, ' ')
+    NI_str = 'NI contributions:'.ljust(25, ' ')
     print(f'\n{vol_str}£ {vol_ex}')
     print(f'{stat_str}£ {statutory}')
     print(f'{lieu_str}£ {lieu}')
