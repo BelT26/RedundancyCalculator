@@ -83,7 +83,7 @@ def next_action():
         if next.lower() == 'q':
             logout()
         elif next.lower() == 'm':
-            break
+            hr_main()
         is_invalid()
 
 
@@ -180,7 +180,8 @@ def view_rejected():
     headings = rej[0]
     first_appl = rej[rej_ind]
     for head, app in zip(headings, first_appl):
-        print(f'{head}:{app}')
+        head = head.ljust(15, ' ')
+        print(f'{head} {app}')
     keep_viewing = True
     while keep_viewing:
         view_next = input('\nPress N to view next, Q to quit, '
@@ -217,7 +218,8 @@ def view_approved():
     headings = appr[0]
     first_appl = appr[appr_ind]
     for head, app in zip(headings, first_appl):
-        print(f'{head}:{app}')
+        head = head.ljust(15, ' ')
+        print(f'{head} {app}')
     keep_viewing = True
     while keep_viewing:
         view_next = input('\nPress V to view next, Q to quit, M for main '
@@ -234,7 +236,7 @@ def view_approved():
                 print('\nNo more approved applications to view \n')
                 keep_viewing = False
                 next_action()
-                break
+                return
         elif view_next.lower() == 'm':
             keep_viewing = False
             hr_main()
