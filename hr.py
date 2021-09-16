@@ -149,7 +149,7 @@ def view_pending():
             num_pending = len(pending)-1
             break
         elif approve.lower() == 'm':
-            show_hr_menu()
+            hr_main()
             return
         elif approve.lower() == 'v':
             print(colored('\nApplication not yet processed.\n', 'cyan',
@@ -181,7 +181,8 @@ def view_rejected():
     first_appl = rej[rej_ind]
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
-    while True:
+    keep_viewing = True
+    while keep_viewing:
         view_next = input('\nPress N to view next, Q to quit, '
                           'M for main menu.\n')
         if view_next.lower() == 'q':
@@ -192,9 +193,12 @@ def view_rejected():
             if rej_ind < len(rej):
                 view_rejected()
             else:
-                print('No more rejected applications to view')
+                print('\nNo more rejected applications to view')
+                keep_viewing = False
                 next_action()
         elif view_next.lower() == 'm':
+            keep_viewing = False
+            hr_main()
             break
         else:
             print(colored('Invalid input', 'red\n'))
@@ -214,25 +218,29 @@ def view_approved():
     first_appl = appr[appr_ind]
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
-    while True:
-        view_next = input('\nPress N to view next, Q to quit, M for main '
+    keep_viewing = True
+    while keep_viewing:
+        view_next = input('\nPress V to view next, Q to quit, M for main '
                           'menu.\n')
         if view_next.lower() == 'q':
             print(colored('\nYou have successfully logged out.\n', 'yellow'))
             exit()
-        elif view_next.lower() == 'n':
+        elif view_next.lower() == 'v':
             appr_ind += 1
             if appr_ind < len(appr):
                 print('Next approved application: \n')
                 view_approved()
             else:
-                print('No more approved applications to view \n')
+                print('\nNo more approved applications to view \n')
+                keep_viewing = False
                 next_action()
                 break
         elif view_next.lower() == 'm':
+            keep_viewing = False
+            hr_main()
             break
         else:
-            print(colored('Invalid input', 'red\n'))
+            is_invalid()
 
 
 def check_worksheet(status):
