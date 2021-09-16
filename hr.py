@@ -108,6 +108,8 @@ def reject_appl(data, ind):
     print(colored('\nApplication rejected.\n', 'cyan', attrs=['bold']))
 
 
+skipped_apps = 0
+
 def view_pending():
     """
     allows the user to view each application that is yet to be approved
@@ -123,15 +125,15 @@ def view_pending():
     global pending
     global viewed_app_ind
     global num_pending
+    global skipped_apps
     headings = pending[0]
     appl_viewed = pending[viewed_app_ind]
-    skipped_apps = 0
     for head, app in zip(headings, appl_viewed):
         head = head.ljust(15, ' ')
         print(f'{head} {app}')
     while True:
         print('\nDo you wish to approve or reject this application?')
-        print('Please enter A to approve, R to reject, N to view next')
+        print('Please enter A to approve, R to reject, V to view next')
         approve = input('or M to return to the main menu:\n')
         if approve.lower() == 'a':
             authorise(appl_viewed, viewed_app_ind)
@@ -146,14 +148,15 @@ def view_pending():
         elif approve.lower() == 'm':
             show_hr_menu()
             break
-        elif approve.lower() == 'n':
+        elif approve.lower() == 'v':
             print(colored('\nApplication not yet processed.\n', 'cyan',
                           attrs=['bold']))
             skipped_apps += 1
+            viewed_app_ind += 1
             break
         else:
             is_invalid()
-    if (num_pending - skipped_apps) > 1:
+    if (num_pending - skipped_apps) > 0:
         print('Next application pending approval:\n')
         view_pending()
     else:
@@ -176,11 +179,11 @@ def view_details(status):
     appr = approved.get_all_values()
     if status == 'rejected':
         headings = rej[0]
-        first_appl = rej[rej_ind]
+        curr_appl = rej[rej_ind]
     elif status == 'approved':
         headings == appr[0]
-        first_appl = appr[appr_ind]
-    for head, app in zip(headings, first_appl):
+        curr_appl = appr[appr_ind]
+    for head, app in zip(headings, curr_appl):
         head = head.ljust(15, ' ')
         print(f'{head}:{app}')
     while True:
@@ -245,8 +248,10 @@ def hr_main():
         global viewed_app_ind
         global appr_ind
         global rej_ind
+        global skipped_apps
         choice = show_hr_menu()
         if choice == '1':
+            skipped_apps = 0
             viewed_app_ind = 1
             check_worksheet('pending')
         elif choice == '2':
