@@ -164,53 +164,70 @@ def view_pending():
         next_action()
 
 
-def view_details(status):
+def view_rejected():
     """
-    allows the user to view details of applications that have been rejected or
-    approved. after viewing each application the user is offered the
-    possibility of exiting the programme or returning to the main menu if they
-    do not wish to carry on viewing the applications.
+    allows the user to view details of applications that have been rejected.
+    after viewing each application the user is offered the possibility of
+    exiting the application or returning to the main menu if they do not wish
+    to carry on viewing the applications.
     """
     global rejected
-    global approved
-    global appr_ind
     global rej_ind
     rej = rejected.get_all_values()
-    appr = approved.get_all_values()
-    if status == 'rejected':
-        headings = rej[0]
-        curr_appl = rej[rej_ind]
-    elif status == 'approved':
-        headings == appr[0]
-        curr_appl = appr[appr_ind]
-    for head, app in zip(headings, curr_appl):
-        head = head.ljust(15, ' ')
+    headings = rej[0]
+    first_appl = rej[rej_ind]
+    for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
     while True:
-        view_next = input('\nPress N to view next. Q to quit. '
-                          'M for main menu\n')
+        view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
         if view_next.lower() == 'q':
-            logout()
-        elif view_next.lower() == 'n' and status == 'rejected':
+            print(colored('\nYou have successfully logged out.\n', 'yellow'))
+            exit()
+        elif view_next.lower() == 'n':
             rej_ind += 1
             if rej_ind < len(rej):
-                view_details('rejected')
+                view_rejected()
             else:
                 print('No more rejected applications to view')
                 next_action()
-                break
-        elif view_next.lower() == 'n' and status == 'approved':
+        elif view_next.lower() == 'm':
+            break
+        else:
+            print(colored('Invalid input', 'red\n'))
+
+
+def view_approved():
+    """
+    allows the user to view details of applications that have been approved.
+    after viewing each application the user is offered the possibility of
+    exiting the application or returning to the main menu if they do not wish
+    to carry on viewing the applications.
+    """
+    global approved
+    global appr_ind
+    appr = approved.get_all_values()
+    headings = appr[0]
+    first_appl = appr[appr_ind]
+    for head, app in zip(headings, first_appl):
+        print(f'{head}:{app}')
+    while True:
+        view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
+        if view_next.lower() == 'q':
+            print(colored('\nYou have successfully logged out.\n', 'yellow'))
+            exit()
+        elif view_next.lower() == 'n':
             appr_ind += 1
             if appr_ind < len(appr):
-                view_details('approved')
+                print('Next approved application: \n')
+                view_approved()
             else:
-                print('No more approved applications to view')
+                print('No more approved applications to view \n')
                 next_action()
                 break
         elif view_next.lower() == 'm':
             break
         else:
-            is_invalid()
+            print(colored('Invalid input', 'red\n'))
 
 
 def check_worksheet(status):
@@ -228,8 +245,10 @@ def check_worksheet(status):
         print(f'First {status} application: \n')
         if status == 'pending':
             view_pending()
+        elif status == 'approved':
+            view_approved()
         else:
-            view_details(status)
+            view_rejected()
     else:
         print(f'No {status} applications\n')
         next_action()
@@ -249,15 +268,15 @@ def hr_main():
         global appr_ind
         global rej_ind
         global skipped_apps
-        choice = show_hr_menu()
-        if choice == '1':
+        user_choice = show_hr_menu()
+        if user_choice == '1':
             skipped_apps = 0
             viewed_app_ind = 1
             check_worksheet('pending')
-        elif choice == '2':
+        elif user_choice == '2':
             appr_ind = 1
             check_worksheet('approved')
-        elif choice == '3':
+        elif user_choice == '3':
             rej_ind = 1
             check_worksheet('rejected')
     next_action()
