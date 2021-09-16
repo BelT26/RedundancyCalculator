@@ -26,7 +26,7 @@ approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
 # welcome message displayed when file is run
-welcome = colored('Welcome to the ABC voluntary redundancy calculator.',
+welcome = colored('\nWelcome to the ABC voluntary redundancy calculator.',
                   'cyan', attrs=['bold'])
 
 

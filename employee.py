@@ -166,9 +166,6 @@ def calculate_statutory(age, years_service, weekly_pay):
             std_rate_yrs = statutory_years - high_rate_yrs
         else:
             std_rate_yrs = min(41 - 22, statutory_years - low_rate_yrs)
-    print(f'lower rate years: {low_rate_yrs}')
-    print(f'standard years: {std_rate_yrs}')
-    print(f'higher rate years: {high_rate_yrs}')
     years = (low_rate_yrs * 0.5) + std_rate_yrs + (high_rate_yrs * 1.5)
     stat_pay = weekly_stat * years
     return stat_pay
@@ -363,13 +360,13 @@ def calculate_tax(salary, overtime, pay_in_lieu, holidays):
     else:
         standard_rate_tax = (std_rate_allowance / 12) * std_tax_perc
         if taxable_sum < ((higher_rate_allowance + std_rate_allowance) / 12):
-            higher_rate_tax = (taxable_sum - std_rate_allowance / 12) * \
+            higher_rate_tax = (taxable_sum - (std_rate_allowance / 12)) * \
                 higher_tax_perc
             return standard_rate_tax + higher_rate_tax
         else:
             higher_rate_tax = (higher_rate_allowance / 12) * higher_tax_perc
-            highest_rate_tax = (taxable_sum - (higher_rate_allowance +
-                                std_rate_allowance)) * highest_tax_perc
+            highest_rate_tax = (taxable_sum - ((higher_rate_allowance +
+                                std_rate_allowance) / 12)) * highest_tax_perc
             return standard_rate_tax + higher_rate_tax + highest_rate_tax
 
 
@@ -436,10 +433,10 @@ def add_to_pending():
         staff_data.insert(0, name)
         staff_data.insert(1, department)
         pending_sheet.append_row(staff_data)
-        print(colored('\nThank you. Application submitted', 'yellow',
+        print(colored('\nThank you. Application submitted', 'cyan',
                       attrs=['bold']))
         print(colored('You will receive a response within '
-                      '5 working days\n', 'yellow', attrs=['bold']))
+                      '5 working days\n', 'cyan', attrs=['bold']))
 
 
 def validate_payroll_num():
@@ -461,7 +458,8 @@ def validate_payroll_num():
             while payroll_attempts > 0:
                 payroll = input('\nPlease enter your payroll number:\n')
                 if payroll == pay_nums[name_ind]:
-                    print(colored('Access granted\n', 'green'))
+                    print(colored('\nAccess granted', 'green',
+                                  attrs=['bold']))
                     authorised = True
                     break
                 else:
@@ -557,7 +555,7 @@ def calculate_redundancy():
                   'for voluntary redundancy.\n', 'yellow', attrs=['bold']))
     global staff_data
     staff_data.extend((gross_salary, statutory, vol_ex, lieu,
-                       holiday_pay, overtime, tax, vol_red))
+                       holiday_pay, overtime, tax, NI, vol_red))
     check_if_applying()
 
 
@@ -592,7 +590,11 @@ def view_status():
     rejected_names = SHEET.worksheet('rejected').col_values(1)
     validate_payroll_num()
     if name in pending_names:
-        print('\nYour application is currently under review.\n')
+        print(colored('Your application is currently under review.',
+                        'cyan', attrs=['bold']))
+        print(colored('Please contact HR if 5 days have passed since your '
+                      'application was submitted\n', 'cyan',
+                      attrs=['bold']))
         exit()
     elif name in approved_names:
         print('\nYour application has been approved\n')
