@@ -40,7 +40,7 @@ To combat these issues I created a redundancy calculator that would allow staff 
 
 ## Planning
 My first step was to set up the functions to calculate the individual elements that made up the redundancy payment
-A breakdown of how I approached the redundancy calculation can be found on the attached Excel spreadsheet [Redundancy spreadsheet](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/Redundancy%20spreadsheet.xlsx).
+A breakdown of how I approached the redundancy calculation can be found on the attached Excel spreadsheet ![Redundancy spreadsheet](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/redundancy_spreadsheet.PNG).
 I then created a function to offer the user to submit an application by saving their details to a google sheets API.
 The HR functions were then put in place so that a member of HR could view, authorise or reject applications.
 The final step was to allow the user the possibility to view the status of their application by creating functions that access the information stored on the google worksheets.
@@ -51,7 +51,7 @@ As the original file I was working on was becoming very lengthy, to improve the 
 
 Google sheets are used to store and manipulate data throughout the programme. I followed the Code Institute Love Sandwiches project and used the code there as a guide for how to set up my working environment and add my credentials.
 
-I also imported the termcolor module at the start of the file to improve the appearance of the programme in the terminal and highlight important information.  The following tutorial was used as a guide ![termcolor tutorial](https://towardsdatascience.com/prettify-your-terminal-text-with-termcolor-and-pyfiglet-880de83fda6b)
+I also imported the termcolor module at the start of the file to improve the appearance of the programme in the terminal and highlight important information.  The following tutorial was used as a guide [termcolor tutorial](https://towardsdatascience.com/prettify-your-terminal-text-with-termcolor-and-pyfiglet-880de83fda6b)
 
 Flowcharts that show the logic of the programme files are provided under the individual sections.
 
