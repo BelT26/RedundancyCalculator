@@ -181,6 +181,7 @@ def view_details(status):
         headings == appr[0]
         first_appl = appr[appr_ind]
     for head, app in zip(headings, first_appl):
+        head = head.ljust(15, ' ')
         print(f'{head}:{app}')
     while True:
         view_next = input('\nPress N to view next. Q to quit. '
