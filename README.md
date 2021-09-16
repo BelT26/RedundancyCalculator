@@ -8,21 +8,23 @@ https://mtl-redundancy-calculator.herokuapp.com/
 ![site preview]()
 
 ## Table of Contents
-* [Motivation]()
-* Planning
-* Structure
-* Data Model
-* Run.py
-* Employee.py
-* Redundancy calculation
-* View Status
-* HR.py
-* Pending applications
-* View authorised and rejected applications
-* Bugs and challenges
-* Deployment
-* Credits
-* Future development possibilities
+* [Motivation](#motivation)
+* [Planning](#planning)
+* [Structure](#structure)
+* [Data Model](#data-model)
+* [Run.py](#run-py)
+* [Employee.py](#employee.py)
+    * [Redundancy calculation](#redundancy-calculation) 
+    * [Application submission](#application-submission)
+    * [View Status](#view-status)
+* [HR.py](#hr.py)
+    * [Pending applications](#pending-applications)
+    * [View approved and rejected applications](#view-approved-and-rejected-applications)
+* [Bugs](#bugs)
+* [Testing](#testing)
+* [Deployment](#deployment)
+* [Credits](#credits)
+* [Future development possibilities](#future-development-possibilities)
 
 
 ## Motivation
@@ -104,13 +106,22 @@ If the user selects this option they are shown each of the pending applications 
 
 If they choose to approve or reject the application the details are removed from the 'pending' worksheet and stored instead in either the 'approved' or 'rejected' worksheet. 
 
-### Approved / Rejected Applications
+### View Approved and Rejected Applications
 The user is shown the details of each of the approved or rejected applications in turn. After each application they are offered the choice of viewing the next application, quitting the programme or returning to the main HR menu. Once all applications have been viewed they can either quit or access the main HR menu.
 
 
 ## Bugs
 The majority of problems I encountered where with the view_pending function within hr.py Although the google sheets API was updating correctly and moving the application from the pending worksheet to the rejected or approved worksheet the terminal kept redisplaying the same application.  I eventually worked out that I needed to reset the pending and num_pending variables immediately after calling the authorise or reject_appl functions
 
+The use of nested while loops caused me some issues in the view approved and view rejected functions in hr.py. Although the if and elif conditions were breaking out of the inner loop the outer loop kept running.  To rectify this I created a variable called 'keep_viewing' and modified its value from True to false the user input provided meant that it was necessary to breakout of the outer loop.
+
+## Testing
+
+No issues were present when the code was passed through the PEP8 validator.
+
+I carried out multiple manual checks to validate numerous possible combinations of user input.
+
+My colleagues who were considering applying for voluntary redundancy checked the figures of my calculator against those provided by HR and confirmed that they matched.
 
 ## Deployment
 I set up an account with heroku.

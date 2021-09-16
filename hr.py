@@ -235,8 +235,7 @@ def view_approved():
             else:
                 print('\nNo more approved applications to view \n')
                 keep_viewing = False
-                next_action()
-                return
+                next_action()                
         elif view_next.lower() == 'm':
             keep_viewing = False
             hr_main()
