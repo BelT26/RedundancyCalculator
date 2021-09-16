@@ -12,12 +12,12 @@ https://mtl-redundancy-calculator.herokuapp.com/
 * [Planning](#planning)
 * [Structure](#structure)
 * [Data Model](#data-model)
-* [Run.py](#run-py)
-* [Employee.py](#employee.py)
+* [Run.py](#run-file)
+* [Employee.py](#employee-file)
     * [Redundancy calculation](#redundancy-calculation) 
     * [Application submission](#application-submission)
     * [View Status](#view-status)
-* [HR.py](#hr.py)
+* [HR.py](#hr-file)
     * [Pending applications](#pending-applications)
     * [View approved and rejected applications](#view-approved-and-rejected-applications)
 * [Bugs](#bugs)
@@ -37,6 +37,7 @@ During the previous redundancy waves staff reported the following concerns about
 
 To combat these issues I created a redundancy calculator that would allow staff to immediately access their potential voluntary redundancy payout in an anonymous way.
 
+
 ## Planning
 My first step was to set up the functions to calculate the individual elements that made up the redundancy payment
 A breakdown of how I approached the redundancy calculation can be found on the attached Excel spreadsheet ![Redundancy spreadsheet]().
@@ -54,6 +55,7 @@ I also imported the termcolor module at the start of the file to improve the app
 
 Flowcharts that show the logic of the programme files are provided under the individual sections.
 
+
 ## Data Model
 I chose to use a Google sheets API as the data model for my project.
 The API is composed of 4 worksheets.
@@ -63,17 +65,18 @@ The other 3 worksheets are used to store the details of the applications submitt
 ![pending worksheet]()
 
 
-## Run.py
+## Run file
 This file displays a welcome message and asks the user to select an access level. If they require access to the
 HR functions they must provide the correct password within 3 attempts or they will be logged out.
 The main function at the base of the file then calls either the option menu imported from employee.py or hr.py
 
 
-## Employee.py
+## Employee file
 There functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
 
 To submit an application or view it's status please use the name REBECCA LANE and the payroll number 2783.
 Alternative logins can be found on the Google staff worksheet although some have already submitted applications!
+
 
 ### Reduncancy calculation
 No user details are requested to access the calculator.  This was deliberate as some employees expressed a wish to be able to calculate their redundancy payout without a record being kept.
@@ -88,23 +91,27 @@ The initial output to the terminal was not particularly readable.  For a better 
 
 After the calculation is displayed the user is then offered the option of submitting an application. If they decide not to proceed no data is stored and they exit the programme.
 
+
 ### Application Submission
 It is only possible to submit an application directly after receiving a calculation.  This is deliberate to prevent the user from entering inaccurate calculations.
 
 If the user decides to proceed with their application they are asked to enter their name and their payroll number. These are then checked against the staff details on the staff worksheet of the Google API. If correct details are provided, a check is then carried out to see if an application has already been submitted. If it has the user, is advised that an application has been made and informed of the status otherwise the user's details are submitted to the pending sheet of the API.
 
+
 ### View status
 This feature offers the employee the possibility of viewing whether their application is approved, rejected or still pending. To access this feature the employee needs to provide their name and payroll number.  If the correct information is not provided within 3 attempts the programme is closed otherwise the status is retrieved by checking the details provided against the data stored on the Google worksheets.  If no matching data is found the user is informed that no application has been submitted and is given the opportunity to calculate their redundancy and submit an application.
 
 
-## HR.py
+## HR file
 The password to access the HR menu is #MTL
 Through the HR menu, authorised users are able to view, approve and reject applications.
+
 
 ### Pending Applications
 If the user selects this option they are shown each of the pending applications in turn. After each application is displayed the user has the options of approving or rejecting it, moving on to view the next application or returning to the main menu.
 
 If they choose to approve or reject the application the details are removed from the 'pending' worksheet and stored instead in either the 'approved' or 'rejected' worksheet. 
+
 
 ### View Approved and Rejected Applications
 The user is shown the details of each of the approved or rejected applications in turn. After each application they are offered the choice of viewing the next application, quitting the programme or returning to the main HR menu. Once all applications have been viewed they can either quit or access the main HR menu.
@@ -115,6 +122,7 @@ The majority of problems I encountered where with the view_pending function with
 
 The use of nested while loops caused me some issues in the view approved and view rejected functions in hr.py. Although the if and elif conditions were breaking out of the inner loop the outer loop kept running.  To rectify this I created a variable called 'keep_viewing' and modified its value from True to false the user input provided meant that it was necessary to breakout of the outer loop.
 
+
 ## Testing
 
 No issues were present when the code was passed through the PEP8 validator.
@@ -123,16 +131,20 @@ I carried out multiple manual checks to validate numerous possible combinations 
 
 My colleagues who were considering applying for voluntary redundancy checked the figures of my calculator against those provided by HR and confirmed that they matched.
 
+
 ## Deployment
-I set up an account with heroku.
-
-On the heroku site I added the following two buildpacks from the _Settings_ tab
-* `heroku/python`
-* `heroku/nodejs`
-
+This project was deployed using the Code Institute's mock terminal for Heroku.
 I created a _Config Var_ called `PORT` and set it to `8000`. For my credentials I then created another _Config Var_ called `CREDS` and pasted the JSON into the value field.
 
-The project was then deployed through my Github repository.
+Steps for deployment:
+* Fork or clone this repository
+* Create a new Heroku App
+* Add the following two buildpacks from the _Settings_ tab
+    * `heroku/python`
+    * `heroku/nodejs`
+* Link the Heroku App to the repository
+* Click on deploy
+
 
 ## Credits
 * The process used to set up my development environment and the code used to link my project to the API were taken from the Code Institute Love Sandwiches walkthrough project.
