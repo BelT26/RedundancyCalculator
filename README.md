@@ -4,14 +4,16 @@ https://mtl-redundancy-calculator.herokuapp.com/
 
 ## Table of Contents
 * Motivation
-* Access levels
-* Staff access features 
-* Caluclate Redundancy
-* Check status
-* HR access features
-* View applications
-* Approve applications
-* Reject applications
+* Planning
+* Structure
+* Data Model
+* Run.py
+* Employee.py
+* Redundancy calculation
+* View Status
+* HR.py
+* Pending applications
+* View authorised and rejected applications
 * Bugs and challenges
 * Deployment
 * Credits
@@ -30,8 +32,6 @@ To combat these issues I created a redundancy calculator that would allow staff 
 
 ## Planning
 My first step was to set up the functions to calculate the individual elements that made up the redundancy payment
-The information taken to calculate the statutory entitlement was taken from the UK government website ![statutory redundancy entitlement]https://www.gov.uk/redundancy-your-rights/redundancy-pay.
-The income tax and national insurance contributions were also calculated based on the figures on the government website ![tax](https://www.gov.uk/income-tax-rates)  ![NI Contributions](https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions)
 A breakdown of how I approached the redundancy calculation can be found on the attached Excel spreadsheet ![Redundancy spreadsheet]().
 I then created a function to offer the user to submit an application by saving their details to a google sheets API.
 The HR functions were then put in place so that a member of HR could view, authorise or reject applications.
@@ -47,6 +47,14 @@ I also imported the termcolor module at the start of the file to improve the app
 
 Flowcharts that show the logic of the programme files are provided under the individual sections.
 
+## Data Model
+I chose to use a Google sheets API as the data model for my project.
+The API is composed of 4 worksheets.
+The 'staff' worksheet is used to store the names and payroll numbers of company employess and is used to validate details provided by users when they select to proceed with a redundancy application or view their application status. 
+![staff worksheet]()
+The other 3 worksheets are used to store the details of the applications submitted. They are named 'pending', 'approved' and 'rejected'. They all have the same format. HR members can manipulate the data to move an application from the 'pending' sheet to either the 'approved' or 'rejected' sheet.
+![pending worksheet]()
+
 
 ## Run.py
 This file displays a welcome message and asks the user to select an access level. If they require access to the
@@ -56,6 +64,9 @@ The main function at the base of the file then calls either the option menu impo
 
 ## Employee.py
 There functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
+
+To submit an application or view it's status please use the name REBECCA LANE and the payroll number 2783.
+Alternative logins can be found on the Google staff worksheet although some have already submitted applications!
 
 ### Reduncancy calculation
 No user details are requested to access the calculator.  This was deliberate as some employees expressed a wish to be able to calculate their redundancy payout without a record being kept.
@@ -73,14 +84,23 @@ After the calculation is displayed the user is then offered the option of submit
 ### Application Submission
 It is only possible to submit an application directly after receiving a calculation.  This is deliberate to prevent the user from entering inaccurate calculations.
 
-If the user decides to proceed with their application they are asked to enter their name and their payroll number. These are then checked against the staff details on the staff worksheet of the Google API. If correct details are provided a check is then carried out to see if an application has already been submitted. If it has the user, is advised that an application has been made and informed of the status otherwise the user's details are submitted to the pending sheet of the API.
+If the user decides to proceed with their application they are asked to enter their name and their payroll number. These are then checked against the staff details on the staff worksheet of the Google API. If correct details are provided, a check is then carried out to see if an application has already been submitted. If it has the user, is advised that an application has been made and informed of the status otherwise the user's details are submitted to the pending sheet of the API.
 
 ### View status
 This feature offers the employee the possibility of viewing whether their application is approved, rejected or still pending. To access this feature the employee needs to provide their name and payroll number.  If the correct information is not provided within 3 attempts the programme is closed otherwise the status is retrieved by checking the details provided against the data stored on the Google worksheets.  If no matching data is found the user is informed that no application has been submitted and is given the opportunity to calculate their redundancy and submit an application.
 
 
 ## HR.py
-Through the HR menu, authorised users are able to view, authorise and reject applications
+The password to access the HR menu is #MTL
+Through the HR menu, authorised users are able to view, approve and reject applications.
+
+### Pending Applications
+If the user selects this option they are shown each of the pending applications in turn. After each application is displayed the user has the options of approving or rejecting it, moving on to view the next application or returning to the main menu.
+
+If they choose to approve or reject the application the details are removed from the 'pending' worksheet and stored instead in either the 'approved' or 'rejected' worksheet. 
+
+### Approved / Rejected Applications
+The user is shown the details of each of the approved or rejected applications in turn. After each application they are offered the choice of viewing the next application, quitting the programme or returning to the main HR menu. Once all applications have been viewed they can either quit or access the main HR menu.
 
 
 ## Bugs
@@ -97,6 +117,11 @@ On the heroku site I added the following two buildpacks from the _Settings_ tab
 I created a _Config Var_ called `PORT` and set it to `8000`. For my credentials I then created another _Config Var_ called `CREDS` and pasted the JSON into the value field.
 
 The project was then deployed through my Github repository.
+
+## Credits
+* The process used to set up my development environment and the code used to link my project to the API were taken from the Code Institute Love Sandwiches walkthrough project.
+* The information taken to calculate the statutory entitlement was taken from the UK government website ![statutory redundancy entitlement]https://www.gov.uk/redundancy-your-rights/redundancy-pay.
+* The income tax and national insurance contributions were also calculated based on the figures on the UK government website ![tax](https://www.gov.uk/income-tax-rates)  ![NI Contributions](https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions)
 
 
 ## Future Development Possibilities
