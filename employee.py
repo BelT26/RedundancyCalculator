@@ -51,7 +51,7 @@ max_weeks_lieu = 12
 
 # defines the number of weeks between the start of the current
 # financial year and the end of the consultation period
-cy_weeks_worked = 9
+cy_weeks_worked = 13
 
 # sets the number of standard hours worked in a week
 weekly_hours = 37.5
@@ -120,7 +120,7 @@ def get_age():
     asks the user for their age and checks that a numerical answer is provided
     """
     while True:
-        print('\nPlease enter your age on 4/10/21')
+        print('\nPlease enter your age on 31/10/21')
         user_age = is_integer()
         return user_age
 
@@ -231,7 +231,7 @@ def get_booked_hols():
     the consultation period and checks that a number is provided
     """
     while True:
-        print('\nEnter the number of holidays booked to be taken by 4/10/21')
+        print('\nEnter the number of holidays booked to be taken by 31/10/21')
         print('Refer to the booked column of your dashboard.')
         booked_hols = is_integer()
         return booked_hols
@@ -572,7 +572,7 @@ def display_calc_message():
     text1 = colored('\nPlease ensure you have access to your '
                     'time and attendance dashboard', 'yellow', attrs=['bold'])
     text2 = colored('You will also require your payroll number if you decide '
-                    'to submit an application.\n',
+                    'to submit an application\n',
                     'yellow', attrs=['bold'])
     print(text1)
     print(text2)

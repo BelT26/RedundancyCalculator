@@ -21,15 +21,18 @@ pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
 
-# variables used in the view_pending and check_pending functions
-viewed_app_ind = 1
+# variable used in the view_pending and check_pending functions
 pending = pending_sheet.get_all_values()
-num_pending = len(pending)-1
+
 
 # variables used to keep track of application being viewed in
-# view_details function
+# view_rejected, view_approved functions.
+# values are reset in hr_main
 rej_ind = 1
 appr_ind = 1
+pend_app_ind = 1
+skipped_apps = 0
+num_pending = len(pending)-1
 
 
 def logout():
@@ -108,8 +111,6 @@ def reject_appl(data, ind):
     print(colored('\nApplication rejected.\n', 'cyan', attrs=['bold']))
 
 
-skipped_apps = 0
-
 def view_pending():
     """
     allows the user to view each application that is yet to be approved
@@ -123,11 +124,11 @@ def view_pending():
     """
     global pending_sheet
     global pending
-    global viewed_app_ind
+    global pend_app_ind
     global num_pending
     global skipped_apps
     headings = pending[0]
-    appl_viewed = pending[viewed_app_ind]
+    appl_viewed = pending[pend_app_ind]
     for head, app in zip(headings, appl_viewed):
         head = head.ljust(15, ' ')
         print(f'{head} {app}')
@@ -136,12 +137,12 @@ def view_pending():
         print('Please enter A to approve, R to reject, V to view next')
         approve = input('or M to return to the main menu:\n')
         if approve.lower() == 'a':
-            authorise(appl_viewed, viewed_app_ind)
+            authorise(appl_viewed, pend_app_ind)
             pending = pending_sheet.get_all_values()
             num_pending = len(pending)-1
             break
         elif approve.lower() == 'r':
-            reject_appl(appl_viewed, viewed_app_ind)
+            reject_appl(appl_viewed, pend_app_ind)
             pending = pending_sheet.get_all_values()
             num_pending = len(pending)-1
             break
@@ -152,7 +153,7 @@ def view_pending():
             print(colored('\nApplication not yet processed.\n', 'cyan',
                           attrs=['bold']))
             skipped_apps += 1
-            viewed_app_ind += 1
+            pend_app_ind += 1
             break
         else:
             is_invalid()
@@ -179,7 +180,8 @@ def view_rejected():
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
     while True:
-        view_next = input('\nPress N to view next. Q to quit. M for main menu\n')
+        view_next = input('\nPress N to view next, Q to quit, '
+                          'M for main menu.\n')
         if view_next.lower() == 'q':
             print(colored('\nYou have successfully logged out.\n', 'yellow'))
             exit()
@@ -211,7 +213,8 @@ def view_approved():
     for head, app in zip(headings, first_appl):
         print(f'{head}:{app}')
     while True:
-        view_next = input('\nPress N to view next, Q to quit, M for main menu.\n')
+        view_next = input('\nPress N to view next, Q to quit, M for main '
+                          'menu.\n')
         if view_next.lower() == 'q':
             print(colored('\nYou have successfully logged out.\n', 'yellow'))
             exit()
@@ -264,14 +267,16 @@ def hr_main():
     has selected the option
     """
     while True:
-        global viewed_app_ind
+        global pend_app_ind
         global appr_ind
         global rej_ind
         global skipped_apps
+        global num_pending
         user_choice = show_hr_menu()
         if user_choice == '1':
             skipped_apps = 0
-            viewed_app_ind = 1
+            pend_app_ind = 1
+            num_pending = len(pending)-1
             check_worksheet('pending')
         elif user_choice == '2':
             appr_ind = 1
