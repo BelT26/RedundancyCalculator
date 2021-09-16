@@ -74,7 +74,7 @@ def is_invalid():
     Prints a statement in bold red type to inform the user that the information
     provided is not valid
     """
-    print(colored('Invalid input\n', 'red', attrs=['bold']))
+    print(colored('\nInvalid input', 'red', attrs=['bold']))
 
 
 def is_integer():
@@ -110,7 +110,7 @@ def get_length_of_service():
     checks that a numerical answer is provided
     """
     while True:
-        print('Please enter the number of years you have worked at ABC.')
+        print('\nPlease enter the number of years you have worked at ABC.')
         length_of_service = is_integer()
         return length_of_service
 
@@ -429,7 +429,7 @@ def add_to_pending():
         print(contact)
         exit()
     else:
-        department = input('Please enter your department:\n')
+        department = input('\nPlease enter your department:\n')
         staff_data.insert(0, name)
         staff_data.insert(1, department)
         pending_sheet.append_row(staff_data)
@@ -488,11 +488,13 @@ def check_if_applying():
     'n' the data is not stored, the user is informed of this and the user
     exits the programme
     """
+    global name
     print('Do you wish to proceed with your application?')
     while True:
         apply = input('Please enter Y or N:\n')
         if apply.lower() == 'y':
-            validate_payroll_num()
+            if name == '':
+                validate_payroll_num()
             add_to_pending()
             break
         elif apply.lower() == 'n':
@@ -515,7 +517,10 @@ def calculate_redundancy():
     """
     los = get_length_of_service()
     if los < 2:
-        print('You must have completed at least 2 years for redundancy.\n')
+        print(colored('\nYou must have completed at least 2 years for '
+                      'redundancy.', 'white', attrs=['bold']))
+        print(colored('Exiting programme.\n',
+                      'white', attrs=['bold']))
         exit()
     gross_salary = get_gross_salary()
     weekly_salary = gross_salary/52
@@ -591,7 +596,7 @@ def view_status():
     validate_payroll_num()
     if name in pending_names:
         print(colored('Your application is currently under review.',
-                        'cyan', attrs=['bold']))
+                      'cyan', attrs=['bold']))
         print(colored('Please contact HR if 5 days have passed since your '
                       'application was submitted\n', 'cyan',
                       attrs=['bold']))
@@ -606,10 +611,10 @@ def view_status():
                       attrs=['bold']))
         exit()
     else:
-        print(colored('Your application has not been received', 'cyan',
+        print(colored('\nYour application has not been received', 'cyan',
                       attrs=['bold']))
         print('\nWould you like to submit an application?')
-        apply = input('Please enter Y to calculate your reduncancy'
+        apply = input('Please enter Y to calculate your reduncancy '
                       'or any other key to exit:\n')
         if apply.lower() == 'y':
             calculate_redundancy()
