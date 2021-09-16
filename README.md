@@ -2,8 +2,13 @@
 
 https://mtl-redundancy-calculator.herokuapp.com/
 
+## Author: Helen Taylor  
+## Version 1.0.0
+
+![site preview]()
+
 ## Table of Contents
-* Motivation
+* [Motivation]()
 * Planning
 * Structure
 * Data Model

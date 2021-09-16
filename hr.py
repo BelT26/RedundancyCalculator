@@ -58,13 +58,15 @@ def show_hr_menu():
     asks the user to choose between three actions and returns the
     choice if valid input is provided
     """
-    while True:
+    no_input = True
+    while no_input:
         print('\nPlease select from the following options:\n')
         print('1. View / authorise pending applications')
         print('2. View authorised applications')
         print('3. View rejected applications\n')
         choice = input('Please enter 1, 2 or 3 or Q to quit \n')
         if choice in ('1', '2', '3'):
+            no_input = False
             return choice
         elif choice.lower() == 'q':
             logout()
@@ -148,7 +150,7 @@ def view_pending():
             break
         elif approve.lower() == 'm':
             show_hr_menu()
-            break
+            return
         elif approve.lower() == 'v':
             print(colored('\nApplication not yet processed.\n', 'cyan',
                           attrs=['bold']))
