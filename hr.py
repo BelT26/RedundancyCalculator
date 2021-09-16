@@ -125,8 +125,10 @@ def view_pending():
     global num_pending
     headings = pending[0]
     appl_viewed = pending[viewed_app_ind]
+    skipped_apps = 0
     for head, app in zip(headings, appl_viewed):
-        print(f'{head.ljust(15, ' ')}:{app}')
+        head = head.ljust(15, ' ')
+        print(f'{head} {app}')
     while True:
         print('\nDo you wish to approve or reject this application?')
         print('Please enter A to approve, R to reject, N to view next')
@@ -147,12 +149,11 @@ def view_pending():
         elif approve.lower() == 'n':
             print(colored('\nApplication not yet processed.\n', 'cyan',
                           attrs=['bold']))
-            viewed_app_ind += 1
-            num_pending -= 1
+            skipped_apps += 1
             break
         else:
             is_invalid()
-    if num_pending > 1:
+    if (num_pending - skipped_apps) > 1:
         print('Next application pending approval:\n')
         view_pending()
     else:
@@ -235,14 +236,22 @@ def hr_main():
     processes the choice returned from show_hr_menu by calling the
     check_worksheet function and passing in the appropriate argument.
     once the action has been completed allows the user to select
-    their next action
+    their next action.  Resets the index of the the application to
+    be viewed to one in case it is not the first time that the user
+    has selected the option
     """
     while True:
+        global viewed_app_ind
+        global appr_ind
+        global rej_ind
         choice = show_hr_menu()
         if choice == '1':
+            viewed_app_ind = 1
             check_worksheet('pending')
         elif choice == '2':
+            appr_ind = 1
             check_worksheet('approved')
         elif choice == '3':
+            rej_ind = 1
             check_worksheet('rejected')
     next_action()
