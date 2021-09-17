@@ -113,13 +113,13 @@ The company I work for has a slightly unusual procedure for holidays brought for
 
 ![holidays owed](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/holidays.PNG)
 
-When the redundancy amount was calculate and displayed, the initial output to the terminal was not particularly readable.  For a better visual experience for the user I aligned the figures using the ljust() method.  
+When the redundancy amount was calculated and displayed, the initial output to the terminal was not particularly readable.  For a better visual experience for the user I aligned the figures using the ljust() method.  
 
 ![calculation example](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/calculation.PNG)
 
 I found that this tutorial was very helpful in implementing the ljust method: [W3 Schools ljust tutorial](https://www.w3schools.com/python/ref_string_ljust.asp)
 
-After the calculation is displayed the user is then offered the option of submitting an application. If they decide not to proceed no data is stored and they exit the programme.
+After the calculation is displayed the user is then offered the option of submitting an application. If they decide not to proceed, no data is stored and they exit the programme.
 
 
 ### Application Submission
@@ -133,8 +133,6 @@ This feature offers the employee the possibility of viewing whether their applic
 
 
 ## HR file
-The password to access the HR menu is #MTL. It is stored in the API for security reasons.
-
 Through the HR menu, authorised users are able to view, approve and reject applications.
 
 ![HR Menu](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/hr_menu.PNG)
