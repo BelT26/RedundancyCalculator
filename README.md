@@ -50,13 +50,13 @@ I then created a function to offer the user to submit an application by saving t
 The HR functions were then put in place so that a member of HR could view, authorise or reject applications.
 The final step was to allow the user the possibility to view the status of their application by creating functions that access the information stored on the google worksheets.
 
-Flowcharts that show the logic that I followed when planning the application are shown below:
+Links to the pdfs of flowcharts that show the logic that I followed when planning the programme are shown below:
 
-![main flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/main_flowchart.pdf)
+[main flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/main_flowchart.pdf)
 
-![employee flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/employee_flowchart.pdf)
+[employee flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/employee_flowchart.pdf)
 
-![hr flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/hr_flowchart.pdf)
+[hr flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/hr_flowchart.pdf)
 
 
 ## Structure
