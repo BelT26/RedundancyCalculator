@@ -45,7 +45,8 @@ def get_role():
             return 'admin'
         elif role.lower() == 'e':
             return 'basic'
-        print(colored('\nInvalid input\n', 'red'))
+        print(colored('\nInvalid input\n', 'red',
+                      attrs=['bold']))
 
 
 def check_password():

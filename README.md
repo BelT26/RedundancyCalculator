@@ -29,7 +29,7 @@ https://mtl-redundancy-calculator.herokuapp.com/
 
 ## Motivation
 I work for a travel company that is currently undergoing their third round of redundancies due to the pandemic.
-The possibility of voluntary redundancy will be offered to staff.
+The possibility of voluntary redundancy is being offered to staff.
 During the previous redundancy waves staff reported the following concerns about making an enquiry to HR to find out how much voluntary redundancy they would be entitled to:
 * The information sent out was not detailed enough and tax was not deducted so it was unclear how much money they would receive.
 * There were delays of several days before they received the information.
@@ -41,13 +41,15 @@ The project was then expanded so that applications could be stored on a Google S
 
 
 ## Planning
-My first step was to set up the functions to calculate the individual elements that made up the redundancy payment
+My first step was to set up the functions to calculate the individual elements that made up the redundancy payment.
 A breakdown of how I approached the redundancy calculation can be found on the attached Excel spreadsheet. 
 
 ![Redundancy spreadsheet](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/redundancy_spreadsheet.PNG)
 
 I then created a function to offer the user to submit an application by saving their details to a google sheets API.
+
 The HR functions were then put in place so that a member of HR could view, authorise or reject applications.
+
 The final step was to allow the user the possibility to view the status of their application by creating functions that access the information stored on the google worksheets.
 
 Links to the pdfs of flowcharts that show the logic that I followed when planning the programme are shown below:
@@ -70,7 +72,10 @@ I also imported the termcolor module at the start of the file to improve the app
 
 ## Data Model
 I chose to use a Google sheets API as the data model for my project.
-The API is composed of 4 worksheets.
+The API is composed of 5 worksheets.
+
+The 'password' worksheet comprises of one cell of data that contains the password to logon as HR.
+
 The 'staff' worksheet is used to store the names and payroll numbers of company employess and is used to validate details provided by users when they select to proceed with a redundancy application or view their application status. 
 
 ![staff worksheet](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/api_staff_list.PNG)
@@ -88,8 +93,8 @@ The main function at the base of the file then calls either the option menu impo
 ## Employee file
 The functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
 
-To submit an application or view it's status please use the name REBECCA LANE and the payroll number 2783.
-Alternative logins can be found on the Google staff worksheet although some have already submitted applications!
+To submit an application or view it's status I would suggest using the name REBECCA LANE and the payroll number 2783.
+Alternative logins can be found on the Google staff worksheet screenshot above. The following have already submitted applications: Stuart Blunt, Sam Callahan, Julie Jones, Sarah White, Amanda Latimer, Brian Wilson.
 
 
 ### Reduncancy calculation
@@ -127,7 +132,7 @@ This feature offers the employee the possibility of viewing whether their applic
 
 
 ## HR file
-The password to access the HR menu is #MTL.
+The password to access the HR menu is #MTL. It is stored in the API for security reasons.
 
 Through the HR menu, authorised users are able to view, approve and reject applications.
 

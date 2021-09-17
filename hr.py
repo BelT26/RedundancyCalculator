@@ -63,8 +63,8 @@ def show_hr_menu():
     no_input = True
     while no_input:
         print('\nPlease select from the following options:\n')
-        print('1. View / authorise pending applications')
-        print('2. View authorised applications')
+        print('1. View / approve pending applications')
+        print('2. View approved applications')
         print('3. View rejected applications\n')
         choice = input('Please enter 1, 2 or 3 or Q to quit \n')
         if choice in ('1', '2', '3'):
@@ -189,8 +189,7 @@ def view_rejected():
         view_next = input('\nPress N to view next, Q to quit, '
                           'M for main menu.\n')
         if view_next.lower() == 'q':
-            print(colored('\nYou have successfully logged out.\n', 'yellow'))
-            exit()
+            logout()
         elif view_next.lower() == 'n':
             rej_ind += 1
             if rej_ind < len(rej):
@@ -204,7 +203,7 @@ def view_rejected():
             hr_main()
             break
         else:
-            print(colored('Invalid input', 'red\n'))
+            is_invalid()
 
 
 def view_approved():
@@ -227,8 +226,7 @@ def view_approved():
         view_next = input('\nPress V to view next, Q to quit, M for main '
                           'menu.\n')
         if view_next.lower() == 'q':
-            print(colored('\nYou have successfully logged out.\n', 'yellow'))
-            exit()
+            logout()
         elif view_next.lower() == 'v':
             appr_ind += 1
             if appr_ind < len(appr):
