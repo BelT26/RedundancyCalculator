@@ -2,7 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 from termcolor import colored
 
-
+# code taken from Love Sandwiches project to connect Python with the API
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",

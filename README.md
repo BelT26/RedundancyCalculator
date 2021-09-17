@@ -50,6 +50,14 @@ I then created a function to offer the user to submit an application by saving t
 The HR functions were then put in place so that a member of HR could view, authorise or reject applications.
 The final step was to allow the user the possibility to view the status of their application by creating functions that access the information stored on the google worksheets.
 
+Flowcharts that show the logic that I followed when planning the application are shown below:
+
+![main flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/main_flowchart.pdf)
+
+![employee flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/employee_flowchart.pdf)
+
+![hr flowchart](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/hr_flowchart.pdf)
+
 
 ## Structure
 As the original file I was working on was becoming very lengthy, to improve the readability of the code I created two more files: employee.py and hr.py so that I could group the functions relevant to the access level selected.  These functions were then imported into the run.py file. 
@@ -58,7 +66,6 @@ Google sheets are used to store and manipulate data throughout the programme. I 
 
 I also imported the termcolor module at the start of the file to improve the appearance of the programme in the terminal and highlight important information.  The following tutorial was used as a guide [termcolor tutorial](https://towardsdatascience.com/prettify-your-terminal-text-with-termcolor-and-pyfiglet-880de83fda6b)
 
-Flowcharts that show the logic of the programme files are provided under the individual sections.
 
 
 ## Data Model
@@ -144,6 +151,9 @@ The majority of problems I encountered where with the view_pending function with
 
 The use of nested while loops caused me some issues in the view approved and view rejected functions in hr.py. Although the if and elif conditions were breaking out of the inner loop the outer loop kept running.  To rectify this I created a variable called 'keep_viewing' and modified its value from True to false the user input provided meant that it was necessary to breakout of the outer loop.
 
+If I tried to revisit an applications worksheet more than once, the programme was breaking due to an index error. I fixed this by adding code to reset the indices to their original value in hr_main.
+
+If an employee had already provided their details to check their application status and then proceeded to submit an application as no application had been received, they were asked to enter their name and payroll number a second time. I rectified this by adding an if clause to check that the value of the global name variable was empty before asking for details in the check_if_applying function.
 
 ## Testing
 

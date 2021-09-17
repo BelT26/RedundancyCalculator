@@ -3,6 +3,7 @@ from google.oauth2.service_account import Credentials
 from termcolor import colored
 
 
+# code taken from Love Sandwiches project to connect Python with the API
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
@@ -24,10 +25,11 @@ rejected = SHEET.worksheet('rejected')
 # variable used in the view_pending and check_pending functions
 pending = pending_sheet.get_all_values()
 
-
-# variables used to keep track of application being viewed in
-# view_rejected, view_approved functions.
-# values are reset in hr_main
+"""
+variables used to keep track of the application being viewed in
+the view_rejected, view_approved  and view rejected functions.
+the values are reset in hr_main
+"""
 rej_ind = 1
 appr_ind = 1
 pend_app_ind = 1
@@ -273,9 +275,9 @@ def hr_main():
     processes the choice returned from show_hr_menu by calling the
     check_worksheet function and passing in the appropriate argument.
     once the action has been completed allows the user to select
-    their next action.  Resets the index of the the application to
-    be viewed to one in case it is not the first time that the user
-    has selected the option
+    their next action.  Resets the indices used by the selected to
+    be viewed to their original value in case it is not the first time
+    that the user has selected the option
     """
     while True:
         global pend_app_ind
