@@ -409,23 +409,26 @@ def add_to_pending():
     pending_names = SHEET.worksheet('pending').col_values(1)
     approved_names = SHEET.worksheet('approved').col_values(1)
     rejected_names = SHEET.worksheet('rejected').col_values(1)
-    received = colored('An application in your name has already '
+    received = colored('\nAn application in your name has already '
                        'been submitted.', 'yellow', attrs=['bold'])
-    contact = colored('Please contact HR for further queries/n', 'yellow',
+    contact = colored('Please contact HR for further queries\n', 'yellow',
                       attrs=['bold'])
     if name in pending_names:
         print(received)
-        print('It is currently under review')
+        print(colored('It is currently under review', 'yellow',
+                      attrs=['bold']))
         print(contact)
         exit()
     elif name in approved_names:
         print(received)
-        print('It has already been approved')
+        print(colored('It has already been approved', 'yellow',
+                      attrs=['bold']))
         print(contact)
         exit()
     elif name in rejected_names:
         print(received)
-        print('Your application has been rejected')
+        print(colored('Unfortunately your application has been rejected',
+                      'yellow', attrs=['bold']))
         print(contact)
         exit()
     else:
