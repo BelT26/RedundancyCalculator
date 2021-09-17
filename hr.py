@@ -186,11 +186,11 @@ def view_rejected():
         print(f'{head} {app}')
     keep_viewing = True
     while keep_viewing:
-        view_next = input('\nPress N to view next, Q to quit, '
+        view_next = input('\nPress V to view next, Q to quit, '
                           'M for main menu.\n')
         if view_next.lower() == 'q':
             logout()
-        elif view_next.lower() == 'n':
+        elif view_next.lower() == 'v':
             rej_ind += 1
             if rej_ind < len(rej):
                 view_rejected()
