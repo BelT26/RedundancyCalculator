@@ -24,6 +24,7 @@ SHEET = GSPREAD_CLIENT.open('Redundancy Applications')
 pending_sheet = SHEET.worksheet('pending')
 approved = SHEET.worksheet('approved')
 rejected = SHEET.worksheet('rejected')
+correct_password = SHEET.worksheet('password').cell(1, 1).value
 
 # welcome message displayed when file is run
 welcome = colored('Welcome to the ABC voluntary redundancy calculator.',
@@ -53,10 +54,11 @@ def check_password():
     know the correct password.  If the third answer fails
     user is informed that they have no more attempts left
     """
+    global correct_password
     attempts = 3
     while attempts > 0:
         password = input('\nPlease enter your password:\n')
-        if password == '#MTL':
+        if password == correct_password:
             print(colored('\nCorrect password', 'green', attrs=['bold']))
             return True
         else:

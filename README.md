@@ -32,7 +32,7 @@ I work for a travel company that is currently undergoing their third round of re
 The possibility of voluntary redundancy will be offered to staff.
 During the previous redundancy waves staff reported the following concerns about making an enquiry to HR to find out how much voluntary redundancy they would be entitled to:
 * The information sent out was not detailed enough and tax was not deducted so it was unclear how much money they would receive.
-* There were delays of several days before they received the information
+* There were delays of several days before they received the information.
 * They would have preferred to obtain this information anonymously as they were concerned it could affect the reduncancy selection process if it were recorded that they had enquired about a voluntary payout. 
 
 To combat these issues I created a redundancy calculator that would allow staff to immediately access their potential voluntary redundancy payout in an anonymous way.  
@@ -86,7 +86,7 @@ The main function at the base of the file then calls either the option menu impo
 
 
 ## Employee file
-There functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
+The functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
 
 To submit an application or view it's status please use the name REBECCA LANE and the payroll number 2783.
 Alternative logins can be found on the Google staff worksheet although some have already submitted applications!
@@ -147,13 +147,13 @@ The user is shown the details of each of the approved or rejected applications i
 
 
 ## Bugs
-The majority of problems I encountered where with the view_pending function within hr.py Although the google sheets API was updating correctly and moving the application from the pending worksheet to the rejected or approved worksheet the terminal kept redisplaying the same application.  I eventually worked out that I needed to reset the pending and num_pending variables immediately after calling the authorise or reject_appl functions
+The majority of problems I encountered where with the view_pending function within hr.py. Although the google sheets API was updating correctly and moving the application from the pending worksheet to the rejected or approved worksheet, the terminal kept redisplaying the same application.  I eventually worked out that I needed to reset the pending and num_pending variables immediately after calling the authorise or reject_appl functions
 
-The use of nested while loops caused me some issues in the view approved and view rejected functions in hr.py. Although the if and elif conditions were breaking out of the inner loop the outer loop kept running.  To rectify this I created a variable called 'keep_viewing' and modified its value from True to false the user input provided meant that it was necessary to breakout of the outer loop.
+The use of nested while loops caused me some issues in the view approved and view rejected functions in hr.py. Although the if and elif conditions were breaking out of the inner loop the outer loop kept running.  To rectify this I created a variable called 'keep_viewing' and modified its value from True to false if the user input provided meant that it was necessary to break out of the outer loop.
 
 If I tried to revisit an applications worksheet more than once, the programme was breaking due to an index error. I fixed this by adding code to reset the indices to their original value in hr_main.
 
-If an employee had already provided their details to check their application status and then proceeded to submit an application as no application had been received, they were asked to enter their name and payroll number a second time. I rectified this by adding an if clause to check that the value of the global name variable was empty before asking for details in the check_if_applying function.
+If an employee had already provided their details to check their application status and then proceeded to submit an application as no application had been received, they were asked to enter their name and payroll number a second time. I rectified this by adding an if clause to check that the value of the global name variable was an empty string before asking for details in the check_if_applying function.
 
 ## Testing
 
@@ -163,7 +163,7 @@ I entered strings where numbers were required to check that  the is_integer func
 
 I tried incorrect passwords, payroll numbers and names to ensure that unauthorised users were not given access to certain functions.
 
-I carried out multiple manual checks both in my local terminal  and the deployed project to validate numerous possible combinations of user input.
+I carried out multiple manual checks both in my local terminal and the deployed project to validate numerous possible combinations of user input.
 
 My colleagues who were considering applying for voluntary redundancy checked the figures of my calculator against those provided by HR and confirmed that they matched.
 
