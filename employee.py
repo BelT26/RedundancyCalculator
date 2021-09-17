@@ -533,8 +533,8 @@ def calculate_redundancy():
     overtime = round(calculate_overtime_payment(gross_salary), 2)
     tax = round(calculate_tax(gross_salary, overtime, lieu, holiday_pay), 2)
     NI = round(calculate_NI(gross_salary, overtime, lieu, holiday_pay), 2)
-    vol_red = round(vol_ex + statutory + lieu + holiday_pay
-                    + overtime - tax - NI, 2)
+    vol_red = round(vol_ex + statutory + lieu + holiday_pay +
+                    overtime - tax - NI, 2)
     total_gross = round(vol_ex + statutory + lieu + holiday_pay + overtime, 2)
     print(colored('\nYour redundancy has been calculated:\n',
                   'white', attrs=['bold']))
