@@ -135,7 +135,7 @@ This feature offers the employee the possibility of viewing whether their applic
 ## HR file
 Through the HR menu, authorised users are able to view, approve and reject applications.
 
-![HR Menu](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/hr_menu.PNG)
+![HR Menu](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/hr_menu.jpg)
 
 
 ### Pending Applications
