@@ -81,6 +81,7 @@ The 'staff' worksheet is used to store the names and payroll numbers of company 
 ![staff worksheet](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/api_staff_list.PNG)
 
 The other 3 worksheets are used to store the details of the applications submitted. They are named 'pending', 'approved' and 'rejected'. They all have the same format. HR members can manipulate the data to move an application from the 'pending' sheet to either the 'approved' or 'rejected' sheet.
+
 ![approved worksheet](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/application_details.PNG)
 
 
@@ -91,16 +92,16 @@ The main function at the base of the file then calls either the option menu impo
 
 
 ## Employee file
-The functions in the employee.py file serve one of 3 purposes:  To calculates the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
+The functions in the employee.py file serve one of 3 purposes:  To calculate the redundancy due, submit an application or to retrieve stored data about an existing application from google sheets.
 
-To submit an application or view it's status I would suggest using the name REBECCA LANE and the payroll number 2783.
+To submit an application or view its status, I would suggest using the name REBECCA LANE and the payroll number 2783.
 Alternative logins can be found on the Google staff worksheet screenshot above. The following have already submitted applications: Stuart Blunt, Sam Callahan, Julie Jones, Sarah White, Amanda Latimer, Brian Wilson.
 
 
 ### Reduncancy calculation
 No user details are requested to access the calculator.  This was deliberate as some employees expressed a wish to be able to calculate their redundancy payout without a record being kept.
 
-Before the calculation process begins a highlighted message informs the user that they will need access to the details on their time and attendance record.  This was emphasised to prevent the user from becoming frustrated part way through the calculation when they realised that they did not have the correct data to hand. (There is no significance to the colors or items highlighted on the below screenshot)
+Before the calculation process begins, a highlighted message informs the user that they will need access to the details on their time and attendance record.  This was emphasised to prevent the user from becoming frustrated part way through the calculation when they realised that they did not have the correct data to hand. (There is no significance to the colors or items highlighted on the below screenshot)
 
  ![employee time and attendance dashboard example](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/holiday_dashboard.png)
 
@@ -108,7 +109,7 @@ The figures used are specific to how the company I work at is calculating redund
 
 As the functions used to retrieve information from the user in this section require a numerical input, I created an 'is_integer' function that tries to convert the user input to an integer and return it and raises a ValueError if the input is not a number.  This function is then called by all subsequent functions that ask the user to provide a number.  
 
-The company I work for has slightly unusual procedure for holidays brought forward from the previous holiday year. 'Bought' holidays are those that were awarded in the past for working extra days, these holidays must be used before the end of the consultation period or they will be lost.  Normal holidays that were not used in the previous holiday year and were carried over will be paid if the employee does not take them before the end of the consultation.  Because of these complexities I added a calculation of the holidays owed once the holiday information had been provided. 
+The company I work for has a slightly unusual procedure for holidays brought forward from the previous holiday year. 'Bought' holidays are those that were awarded in the past for working extra days, these holidays must be used before the end of the consultation period or they will be lost.  Normal holidays that were not used in the previous holiday year and were carried over will be paid if the employee does not take them before the end of the consultation.  Because of these complexities I added a calculation of the holidays owed once the holiday information had been provided. 
 
 ![holidays owed](https://github.com/BelT26/RedundancyCalculator/blob/main/assets/holidays.PNG)
 
